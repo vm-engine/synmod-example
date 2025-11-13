@@ -1,0 +1,85 @@
+{
+    "id": "example",
+    "id_case": {
+        "snake": "example",
+        "pascal": "Example",
+        "slug": "example",
+        "studly": "example"
+    },
+    "name": "Example Module",
+    "description": "Example Module",
+    "version": "0.1.0",
+    "author": "Adods",
+    "email": "theadods@gmail.com",
+    "git_repo": "",
+    "url_prefix": "example",
+    "dependencies": {
+        "npm": {
+            "main": {},
+            "dev": {}
+        },
+        "composer": {
+            "main": {},
+            "dev": {}
+        }
+    },
+    "nav": {
+        "frontend": {
+            "index": {
+                "id": "index",
+                "name": "__example::menu.fe.index",
+                "route": "example.index"
+            }
+        },
+        "backend": {
+            "name": "__example::menu.be.parent",
+            "position": 1,
+            "class": "",
+            "icon": "fa-solid fa-table",
+            "acl": "example.any",
+            "sub": {
+                "index": {
+                    "id": "index",
+                    "name": "__example::menu.be.index",
+                    "route": "example.index",
+                    "class": "",
+                    "icon": "fa-solid fa-table",
+                    "acl": "example.manage"
+                },
+                "category": {
+                    "id": "category",
+                    "name": "__example::menu.be.category",
+                    "route": "example.category",
+                    "class": "",
+                    "icon": "fa-solid fa-folder",
+                    "acl": "example.category"
+                }
+            }
+        }
+    },
+    "acl": {
+        "manage": {
+            "label": "__example::acl.manage",
+            "create": 1,
+            "read": 1,
+            "update": 1,
+            "delete": 1,
+            "sub": {
+                "subfeature": {
+                    "label": "__example::acl.manage_subfeature",
+                    "create": 1,
+                    "read": 1,
+                    "update": 1,
+                    "delete": 1
+                }
+            }
+        },
+        "category": {
+            "label": "__example::acl.category",
+            "create": 1,
+            "read": 1,
+            "update": 1,
+            "delete": 1
+        }
+    }
+}

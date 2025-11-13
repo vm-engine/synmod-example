@@ -1,0 +1,20 @@
+{
+    "name": "vm-engine/example",
+    "description": "Synapse Engine Example Module",
+    "type": "synapse-module",
+    "autoload": {
+        "psr-4": {
+            "VmEngine\\Example\\": "src/",
+            "VmEngine\\Example\\Seeders\\": "database/seeders/",
+            "VmEngine\\Example\\Factories\\": "database/factories/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Achmad Ardiansyah",
+            "email": "theadods@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
