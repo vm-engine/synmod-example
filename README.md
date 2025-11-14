@@ -98,24 +98,34 @@ All backend routes are automatically prefixed with `/admin/example/` and require
 
 ### Running Tests
 
-From the parent Laravel project:
+**IMPORTANT:** Tests for this module **must be run from the parent Laravel project**, not from within the module directory itself.
+
+This is because the module has dependencies on:
+- Laravel Synapse (`vm-engine/synapse`)
+- SynApps Auth (`vm-engine/synapps-auth`)
+
+These dependencies make it impractical to test in isolation using Orchestra Testbench. The module requires a full Laravel application with Synapse and Auth modules installed.
+
+From the parent Laravel project root:
 
 ```bash
 # Run all tests
 ./vendor/bin/pest
 
-# Run this module's tests
-./vendor/bin/pest packages/synmod-example/tests
+# Run this module's tests specifically (use vendor path, not packages)
+./vendor/bin/pest vendor/vm-engine/synmod-example/tests
 
 # Run specific test
 ./vendor/bin/pest --filter="can create an example"
 ```
 
+**Note:** When testing, use the `vendor/vm-engine/synmod-example/tests` path (not `packages/synmod-example/tests`) to reflect the actual deployment structure when the module is released via Composer.
+
 ### Code Quality
 
 ```bash
-# Fix code style
-./vendor/bin/pint packages/synmod-example
+# Fix code style (use vendor path)
+./vendor/bin/pint vendor/vm-engine/synmod-example
 ```
 
 ## Key Patterns
