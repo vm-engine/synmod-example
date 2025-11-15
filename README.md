@@ -15,16 +15,44 @@ This module serves as an example and template for building package modules in La
 
 ## Installation
 
-Add to your Laravel Synapse project via Composer:
+### 1. Add Repository URL
 
-```bash
-composer require vm-engine/example
+Add the repository to your project's `composer.json`:
+
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/vm-engine/synmod-example"
+        }
+    ]
+}
 ```
 
-Run migrations:
+### 2. Install Package
+
+```bash
+composer require vm-engine/synmod-example
+```
+
+### 3. Discover Modules and Cache Configuration
+
+```bash
+php artisan synapps:discover
+php artisan config:cache
+```
+
+### 4. Run Migrations
 
 ```bash
 php artisan migrate
+```
+
+### 5. Build Assets
+
+```bash
+npm run build
 ```
 
 ## Features
@@ -182,4 +210,4 @@ Email: theadods@gmail.com
 
 ## Version
 
-0.1.0
+1.0.0
