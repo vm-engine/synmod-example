@@ -118,6 +118,7 @@
                                         <div class="flex items-center">
                                             @canAccess('example.category.update')
                                             <x-synapse-toggler
+                                                wire:key="toggler-{{ $category->id }}"
                                                 title="Toggle Status"
                                                 :inline="true"
                                                 :checked="$category->is_active"
@@ -157,7 +158,7 @@
                                                     confirmColor: 'danger',
                                                     icon: 'fa-solid fa-trash',
                                                     wireMethod: 'delete',
-                                                    wireParams: [{{ $category->id }}],
+                                                    wireParams: ['{{ $category->delete_token }}'],
                                                     wireComponent: '{{ $this->getId() }}'
                                                 })"
                                             >

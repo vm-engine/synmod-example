@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use VmEngine\Example\Factories\ExampleCategoryFactory;
+use VmEngine\Synapse\Traits\WithDeleteToken;
 
 /**
  * @property int $id
@@ -22,6 +23,9 @@ use VmEngine\Example\Factories\ExampleCategoryFactory;
 class ExampleCategory extends Model
 {
     use HasFactory;
+    use WithDeleteToken {
+        WithDeleteToken::booted as deleteBooted;
+    }
 
     protected $fillable = [
         'name',
@@ -52,6 +56,8 @@ class ExampleCategory extends Model
                 $category->slug = Str::slug($category->name);
             }
         });
+
+        static::deleteBooted();
     }
 
     #[Scope]

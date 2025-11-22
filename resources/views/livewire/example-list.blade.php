@@ -195,7 +195,7 @@
                                                     confirmColor: 'danger',
                                                     icon: 'fa-solid fa-trash',
                                                     wireMethod: 'delete',
-                                                    wireParams: [{{ $list->id }}],
+                                                    wireParams: ['{{ $list->delete_token }}'],
                                                     wireComponent: '{{ $this->getId() }}'
                                                 })"
                                             >

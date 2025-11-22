@@ -77,9 +77,13 @@ class ExampleList extends Component
         $this->resetPage();
     }
 
-    public function delete($id)
+    public function delete($token)
     {
         try {
+            $id = Example::validateDeleteToken($token);
+            if (! $id) {
+                throw new Exception(__('example::labels.invalid_delete_token'));
+            }
             $example = Example::findOrFail($id);
             $storage = Storage::disk('public');
             if ($example->file && $storage->exists($example->file)) {

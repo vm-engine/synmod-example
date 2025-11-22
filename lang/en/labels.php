@@ -60,6 +60,7 @@ return [
     'delete_category_title' => 'Delete Category',
     'delete_category_message' => 'Are you sure you want to delete ":name"? This action cannot be undone.',
     'yes_delete' => 'Yes, Delete',
+    'invalid_delete_token' => 'Invalid delete token.',
 
     // Form types (legacy)
     'forms' => [

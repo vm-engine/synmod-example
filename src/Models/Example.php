@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use VmEngine\Example\Factories\ExampleFactory;
+use VmEngine\Synapse\Traits\WithDeleteToken;
 
 /**
  * @property int $id
@@ -33,6 +34,7 @@ use VmEngine\Example\Factories\ExampleFactory;
 class Example extends Model
 {
     use HasFactory;
+    use WithDeleteToken;
 
     protected $fillable = [
         'category_id',

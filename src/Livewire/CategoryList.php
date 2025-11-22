@@ -80,9 +80,13 @@ class CategoryList extends Component
         }
     }
 
-    public function delete($id)
+    public function delete($token)
     {
         try {
+            $id = ExampleCategory::validateDeleteToken($token);
+            if (! $id) {
+                throw new Exception(__('example::labels.invalid_delete_token'));
+            }
             $category = ExampleCategory::findOrFail($id);
             $category->delete();
         } catch (ModelNotFoundException) {
