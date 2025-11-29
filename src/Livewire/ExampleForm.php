@@ -53,7 +53,7 @@ class ExampleForm extends Component
     {
         $breadcrumbs = Breadcrumbs::make(
             'Example List',
-            route('backend.example.index'),
+            backend_route('example.index'),
             'fa-solid fa-list',
         )->add(
             label: 'Form',

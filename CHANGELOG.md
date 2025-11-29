@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2025-11-29
+
+### Fixed
+- Fixed route helper usage: changed from `route()` to `backend_route()` helper for all backend routes
+- Fixed test assertion syntax in `ExampleTest.php` for delete operation
+- Improved route consistency across views and components
+
+### Changed
+- Updated Claude Code settings to allow git tag and push operations
+
+## [1.0.1] - 2025-01-14
+
+### Security
+- Enhanced security measures and bug fixes
+
 ## [1.0.0] - 2025-01-14
 
 ### Added
@@ -40,5 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Form Validation**: Email, password complexity, required fields
 - **File Management**: Upload and deletion of document files
 
-[Unreleased]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.0...HEAD
+[Unreleased]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.2...HEAD
+[1.0.2]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.1...v1.0.2
+[1.0.1]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.0...v1.0.1
 [1.0.0]: https://repo.4visionmedia.com/vm-engine/synmod-example/releases/tag/v1.0.0

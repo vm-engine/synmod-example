@@ -46,13 +46,13 @@ describe('Model Factory', function () {
 
 describe('Page Rendering', function () {
     it('renders the example form', function () {
-        $response = $this->actingAs($this->user)->get(route('backend.example.form'));
+        $response = $this->actingAs($this->user)->get(backend_route('example.form'));
 
         $response->assertStatus(200);
     });
 
     it('renders the example list', function () {
-        $response = $this->actingAs($this->user)->get(route('backend.example.index'));
+        $response = $this->actingAs($this->user)->get(backend_route('example.index'));
 
         $response->assertStatus(200);
     });
@@ -61,7 +61,7 @@ describe('Page Rendering', function () {
         $example = Example::factory()->create();
 
         $response = $this->actingAs($this->user)
-            ->get(route('backend.example.form', ['id' => $example->id]));
+            ->get(backend_route('example.form', ['id' => $example->id]));
 
         $response->assertStatus(200);
     });
@@ -87,7 +87,7 @@ describe('Create Example', function () {
             ->set('form.datetime', '2025-01-15 10:30')
             ->set('form.color', '#ff0000')
             ->call('save')
-            ->assertRedirect(route('backend.example.index'))
+            ->assertRedirect(backend_route('example.index'))
             ->assertSessionHas('success', 'Example created successfully.');
 
         $this->assertDatabaseHas('examples', [
@@ -152,7 +152,7 @@ describe('Update Example', function () {
             ->set('form.email', 'updated@example.com')
             ->set('form.protected', 'Updated@123!')
             ->call('save')
-            ->assertRedirect(route('backend.example.index'))
+            ->assertRedirect(backend_route('example.index'))
             ->assertSessionHas('success', 'Example updated successfully.');
 
         $this->assertDatabaseHas('examples', [
@@ -185,7 +185,7 @@ describe('Update Example', function () {
         $this->actingAs($this->user);
 
         Livewire::test(ExampleForm::class, ['id' => 99999])
-            ->assertRedirect(route('backend.example.index'))
+            ->assertRedirect(backend_route('example.index'))
             ->assertSessionHas('danger', 'Data not found.');
     });
 });
@@ -206,9 +206,9 @@ describe('Delete Example', function () {
             ->call('delete', $example->id)
             ->assertDispatched('notify');
 
-        $this->assertDatabaseMissing('examples', [
+        $this->assertDatabaseMissing('examples', [[
             'id' => $example->id,
-        ]);
+        ]]);
     });
 
     it('handles deleting non-existent example gracefully', function () {

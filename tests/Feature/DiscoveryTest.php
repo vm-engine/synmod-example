@@ -14,7 +14,7 @@ describe('Example Module Discovery', function () {
         expect(class_exists(Example::class))->toBeTrue();
 
         // Verify route is registered (just check it exists and returns a URL)
-        $routeUrl = route('backend.example.index');
+        $routeUrl = backend_route('example.index');
         expect($routeUrl)->toBeString()->not->toBeEmpty();
     });
 });
