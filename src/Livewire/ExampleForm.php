@@ -64,11 +64,15 @@ class ExampleForm extends Component
 
         $categories = ExampleCategory::active()->select('name as label', 'id as value')->get()->toArray();
 
+        $title = $this->form->example
+            ? __('example::labels.edit').' '.__('example::labels.example_form')
+            : __('example::labels.add').' '.__('example::labels.example_form');
+
         // View: synapps/modules/example/resources/views/livewire/example-form.blade.php
         return view('example::livewire.example-form', [
             'breadcrumbs' => $breadcrumbs,
             'options' => range(1, 9),
             'categories' => $categories,
-        ]);
+        ])->title($title);
     }
 }

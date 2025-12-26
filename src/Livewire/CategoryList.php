@@ -154,6 +154,6 @@ class CategoryList extends Component
         return view('example::livewire.category-list', [
             'statusOptions' => $statusOptions,
             'breadcrumbs' => $breadcrumbs,
-        ]);
+        ])->title(__('example::labels.category_list'));
     }
 }

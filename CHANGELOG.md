@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2025-12-26
+
+### Added
+- Added page titles to all Livewire components using `title()` method
+  - `ExampleList`: "Example List"
+  - `ExampleForm`: Dynamic titles - "Add Example Form" or "Edit Example Form"
+  - `CategoryList`: "Category List"
+  - `ExamplePage`: "Example"
+
+### Changed
+- Enhanced SEO and browser tab identification with descriptive page titles
+
 ## [1.0.2] - 2025-11-29
 
 ### Fixed
@@ -55,7 +67,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Form Validation**: Email, password complexity, required fields
 - **File Management**: Upload and deletion of document files
 
-[Unreleased]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.2...HEAD
+[Unreleased]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.3...HEAD
+[1.0.3]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.2...v1.0.3
 [1.0.2]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.1...v1.0.2
 [1.0.1]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.0...v1.0.1
 [1.0.0]: https://repo.4visionmedia.com/vm-engine/synmod-example/releases/tag/v1.0.0

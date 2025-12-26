@@ -8,6 +8,7 @@ class ExamplePage extends Component
 {
     public function render()
     {
-        return view('example::livewire.example-page');
+        return view('example::livewire.example-page')
+            ->title(__('example::menu.be.parent'));
     }
 }

@@ -156,6 +156,6 @@ class ExampleList extends Component
             'options' => $options,
             'categories' => $categories,
             'breadcrumbs' => $breadcrumbs,
-        ]);
+        ])->title(__('example::labels.example_list'));
     }
 }
