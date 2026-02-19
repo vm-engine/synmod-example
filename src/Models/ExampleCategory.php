@@ -23,9 +23,7 @@ use VmEngine\Synapse\Traits\WithDeleteToken;
 class ExampleCategory extends Model
 {
     use HasFactory;
-    use WithDeleteToken {
-        WithDeleteToken::booted as deleteBooted;
-    }
+    use WithDeleteToken;
 
     protected $fillable = [
         'name',
@@ -57,7 +55,7 @@ class ExampleCategory extends Model
             }
         });
 
-        static::deleteBooted();
+        // static::deleteBooted();
     }
 
     #[Scope]

@@ -1,5 +1,5 @@
 <div x-data="{ pageName: 'Category List', isHome: false, drawerOpen: false }">
-    @include('synapps::components.layouts.partials.breadcrumbs')
+    @include('synapps::components.layouts.partials.breadcrumbs', ['breadcrumbs' => $this->breadcrumbs])
 
     <!-- Confirmation Dialog -->
     <x-synapse-confirm-dialog />
@@ -91,7 +91,7 @@
                                 $i = 1;
                             @endphp
                             @foreach ($this->categoryList as $category)
-                                <tr>
+                                <tr wire:key="category-{{ $category->id }}">
                                     <td>
                                         <div class="flex items-center">
                                             <p>{{ ($this->categoryList->currentPage() - 1) * $limit + $i }}</p>
@@ -150,16 +150,22 @@
                                             <button
                                                 class="btn-icon danger has-tooltip group"
                                                 type="button"
-                                                wire:click="$dispatch('confirm-dialog', {
-                                                    title: '{{ __('example::labels.delete_category_title') }}',
-                                                    message: '{{ __('example::labels.delete_category_message', ['name' => addslashes($category->name)]) }}',
-                                                    confirmText: '{{ __('example::labels.yes_delete') }}',
-                                                    cancelText: '{{ __('example::labels.cancel') }}',
+                                                data-title="{{ __('example::labels.delete_category_title') }}"
+                                                data-message="{{ __('example::labels.delete_category_message', ['name' => $category->name]) }}"
+                                                data-confirm="{{ __('example::labels.yes_delete') }}"
+                                                data-cancel="{{ __('example::labels.cancel') }}"
+                                                data-token="{{ $category->delete_token }}"
+                                                data-component="{{ $this->getId() }}"
+                                                @click="$dispatch('confirm-dialog', {
+                                                    title: $el.dataset.title,
+                                                    message: $el.dataset.message,
+                                                    confirmText: $el.dataset.confirm,
+                                                    cancelText: $el.dataset.cancel,
                                                     confirmColor: 'danger',
                                                     icon: 'fa-solid fa-trash',
                                                     wireMethod: 'delete',
-                                                    wireParams: ['{{ $category->delete_token }}'],
-                                                    wireComponent: '{{ $this->getId() }}'
+                                                    wireParams: [$el.dataset.token],
+                                                    wireComponent: $el.dataset.component
                                                 })"
                                             >
                                                 <span class="fa-solid fa-trash"></span>
@@ -210,7 +216,7 @@
                 id="filterStatus"
                 name="filterStatus"
                 wire:model.live="filterStatus"
-                :options="$statusOptions"
+                :options="$this->statusOptions"
             >
             </x-synapse-select>
         </div>
@@ -221,6 +227,6 @@
         name="category-form"
         maxWidth="2xl"
     >
-        <livewire:category-form />
+        <livewire:example.category-form />
     </x-synapse-modal>
 </div>

@@ -2,9 +2,8 @@
     class="relative overflow-y-auto"
     x-data="{ pageName: 'Example Form', isHome: false }"
 >
-    @include('synapps::components.layouts.partials.loader')
-    @include('synapps::components.layouts.partials.breadcrumbs')
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 mb-16">
+    @include('synapps::components.layouts.partials.breadcrumbs', ['breadcrumbs' => $this->breadcrumbs])
+    <div class="mb-16 grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div class="space-y-6">
             <div class="card">
                 <div class="card-header">
@@ -15,8 +14,8 @@
                         <label for="category">Category</label>
                         <x-synapse-adv-select
                             wire-model="form.category_id"
-                            :options="$categories"
-                            :multiple="true"
+                            :options="$this->categories"
+                            :multiple="false"
                             placeholder="Select a category"
                         />
                         @error('form.category_id')
@@ -94,7 +93,7 @@
                         <x-synapse-select
                             id="dropdown"
                             name="dropdown"
-                            :options="$options"
+                            :options="$this->options"
                             wire:model="form.dropdown"
                         ></x-synapse-select>
                         @error('form.dropdown')
@@ -108,7 +107,7 @@
                         <x-synapse-multiselect
                             class="@error('form.multidropdown') has-error @enderror"
                             :name="'multidropdown'"
-                            :options="$options"
+                            :options="$this->options"
                             :model="$form->multidropdown"
                             @class([
                                 'has-error' => $errors->has('form.multidropdown'),
@@ -158,7 +157,7 @@
                     <div class="form-box required">
                         <label for="protected">{{ __('example::labels.forms.protected') }}</label>
                         <x-synapse-password
-                            class=" @error('form.protected') has-error @enderror"
+                            class="@error('form.protected') has-error @enderror"
                             id="protected"
                             name="protected"
                             @class([
@@ -234,7 +233,7 @@
                             id="file"
                             name="file"
                             type="file"
-                            wire:model.defer="form.file"
+                            wire:model="form.file"
                             accept=".doc,.docx,.pdf,.xls,.xlsx,.ppt,.pptx"
                         />
                         @error('file')
@@ -257,7 +256,7 @@
             </div>
         </div>
     </div>
-    <div class="card fixed bottom-0 right-0 z-9 m-5 shadow-gray-700">
+    <div class="card z-9 fixed bottom-0 right-0 m-5 shadow-gray-700">
         <button
             class="btn primary"
             id="save"

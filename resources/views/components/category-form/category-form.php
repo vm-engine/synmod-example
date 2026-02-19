@@ -1,42 +1,40 @@
 <?php
 
-namespace VmEngine\Example\Livewire;
+declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use VmEngine\Example\Livewire\Forms\CategoryFormObject;
 use VmEngine\Example\Models\ExampleCategory;
 
-class CategoryForm extends Component
+new class extends Component
 {
     public CategoryFormObject $form;
 
-    protected $listeners = [
-        'load-category' => 'loadCategory',
-        'reset-category-form' => 'resetForm',
-    ];
-
-    public function loadCategory($id)
+    #[On('load-category')]
+    public function loadCategory(int $id): void
     {
         try {
             $category = ExampleCategory::query()->findOrFail($id);
             $this->form->setCategory($category);
         } catch (ModelNotFoundException) {
-            $this->dispatch('notify', [
-                'variant' => 'danger',
-                'title' => 'Error',
-                'message' => __('example::labels.category_not_found'),
-            ]);
+            $this->dispatch('notify',
+                variant: 'danger',
+                title: 'Error',
+                message: __('example::labels.category_not_found'),
+            );
             $this->dispatch('close-modal-category-form');
         }
     }
 
-    public function resetForm()
+    #[On('reset-category-form')]
+    public function resetForm(): void
     {
         $this->form->reset();
     }
 
-    public function save()
+    public function save(): void
     {
         if ($this->form->category) {
             $this->form->update();
@@ -46,18 +44,13 @@ class CategoryForm extends Component
             $message = __('example::labels.category_created');
         }
 
-        $this->dispatch('notify', [
-            'variant' => 'success',
-            'title' => 'Success',
-            'message' => $message,
-        ]);
+        $this->dispatch('notify',
+            variant: 'success',
+            title: 'Success',
+            message: $message,
+        );
 
         $this->dispatch('close-modal-category-form');
-        $this->dispatch('$refresh')->to('category-list');
+        $this->dispatch('$refresh')->to('example.category-list');
     }
-
-    public function render()
-    {
-        return view('example::livewire.category-form');
-    }
-}
+};

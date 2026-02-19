@@ -1,8 +1,7 @@
 <?php
 
-namespace VmEngine\Example\Livewire;
+declare(strict_types=1);
 
-use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
@@ -11,7 +10,7 @@ use Livewire\WithPagination;
 use VmEngine\Example\Models\ExampleCategory;
 use VmEngine\Synapse\Services\Helper\Breadcrumbs;
 
-class CategoryList extends Component
+new class extends Component
 {
     use WithPagination;
 
@@ -21,25 +20,38 @@ class CategoryList extends Component
     #[Url()]
     public $filterStatus = null;
 
-    public $limit = 10;
+    #[Url()]
+    public int $limit = 10;
 
-    public $sort = 'id';
+    #[Url()]
+    public string $sort = 'id';
 
-    public $sortDirection = 'asc';
+    #[Url()]
+    public string $sortDirection = 'asc';
 
-    public function updated()
+    public function mount(): void
+    {
+        synav()->setActiveMenu('example.category');
+    }
+
+    public function title(): string
+    {
+        return __('example::labels.category_list');
+    }
+
+    public function updated(): void
     {
         $this->resetPage();
     }
 
-    public function updating()
+    public function updating(): void
     {
         if ($this->filterStatus === 'all') {
             $this->filterStatus = null;
         }
     }
 
-    public function sortData($sort)
+    public function sortData(string $sort): void
     {
         if ($this->sort === $sort && $this->sortDirection === 'asc') {
             $this->sortDirection = 'desc';
@@ -50,67 +62,72 @@ class CategoryList extends Component
         } else {
             $this->sortDirection = 'asc';
         }
+
         $this->sort = $sort;
     }
 
-    public function toggleActive($id)
+    public function toggleActive(int $id): void
     {
         try {
             $category = ExampleCategory::findOrFail($id);
             $category->is_active = ! $category->is_active;
             $category->save();
 
-            $this->dispatch('notify', [
-                'variant' => 'success',
-                'title' => 'Success',
-                'message' => __('example::labels.category_status_updated'),
-            ]);
+            $this->dispatch('notify',
+                variant: 'success',
+                title: 'Success',
+                message: __('example::labels.category_status_updated'),
+            );
         } catch (ModelNotFoundException) {
-            $this->dispatch('notify', [
-                'variant' => 'danger',
-                'title' => 'Error',
-                'message' => __('example::labels.category_not_found'),
-            ]);
+            $this->dispatch('notify',
+                variant: 'danger',
+                title: 'Error',
+                message: __('example::labels.category_not_found'),
+            );
         } catch (Exception $e) {
-            $this->dispatch('notify', [
-                'variant' => 'danger',
-                'title' => 'Error',
-                'message' => $e->getMessage(),
-            ]);
+            $this->dispatch('notify',
+                variant: 'danger',
+                title: 'Error',
+                message: $e->getMessage(),
+            );
         }
     }
 
-    public function delete($token)
+    public function delete(string $token): void
     {
         try {
             $id = ExampleCategory::validateDeleteToken($token);
+
             if (! $id) {
                 throw new Exception(__('example::labels.invalid_delete_token'));
             }
+
             $category = ExampleCategory::findOrFail($id);
             $category->delete();
         } catch (ModelNotFoundException) {
-            $this->dispatch('notify', [
-                'variant' => 'danger',
-                'title' => 'Error',
-                'message' => __('example::labels.category_not_found'),
-            ]);
+            $this->dispatch('notify',
+                variant: 'danger',
+                title: 'Error',
+                message: __('example::labels.category_not_found'),
+            );
 
             return;
         } catch (Exception $e) {
-            $this->dispatch('notify', [
-                'variant' => 'danger',
-                'title' => 'Error',
-                'message' => $e->getMessage(),
-            ]);
+            $this->dispatch('notify',
+                variant: 'danger',
+                title: 'Error',
+                message: $e->getMessage(),
+            );
 
             return;
         }
+
+        $this->dispatch('synapse-confirmed');
 
         $this->dispatch('notify',
             variant: 'success',
             title: 'Success',
-            message: __('example::labels.category_deleted')
+            message: __('example::labels.category_deleted'),
         );
     }
 
@@ -133,27 +150,25 @@ class CategoryList extends Component
             ->onEachSide(1);
     }
 
-    public function render()
+    #[Computed()]
+    public function statusOptions(): array
     {
-        $statusOptions = [
+        return [
             'all' => __('example::labels.all'),
             'active' => __('example::labels.active'),
             'inactive' => __('example::labels.inactive'),
         ];
+    }
 
-        $breadcrumbs = Breadcrumbs::make(
+    #[Computed()]
+    public function breadcrumbs(): Breadcrumbs
+    {
+        return Breadcrumbs::make(
             label: __('example::menu.be.index'),
             icon: 'fa-solid fa-table',
         )->add(
             label: __('example::labels.category_list'),
             icon: 'fa-solid fa-list',
         );
-
-        synav()->setActiveMenu('example.category');
-
-        return view('example::livewire.category-list', [
-            'statusOptions' => $statusOptions,
-            'breadcrumbs' => $breadcrumbs,
-        ])->title(__('example::labels.category_list'));
     }
-}
+};

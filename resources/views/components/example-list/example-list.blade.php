@@ -1,6 +1,6 @@
 <div x-data="{ pageName: 'Example List', isHome: false, drawerOpen: false }">
     @include('synapps::components.layouts.partials.loader')
-    @include('synapps::components.layouts.partials.breadcrumbs')
+    @include('synapps::components.layouts.partials.breadcrumbs', ['breadcrumbs' => $this->breadcrumbs])
 
     <!-- Confirmation Dialog -->
     <x-synapse-confirm-dialog />
@@ -21,7 +21,7 @@
                     <div>
                         <a
                             class="btn primary"
-                            href="{{ backend_route('example.form') }}"
+                            :href="withBack('{{ backend_route('example.form') }}')"
                             wire:navigate
                         >
                             <span class="fa-solid fa-plus"></span>
@@ -40,7 +40,7 @@
                             class="form-input p-2"
                             id="q"
                             name="q"
-                            type=" text"
+                            type="text"
                             placeholder="Search"
                             wire:model.live.debounce="q"
                         >
@@ -111,7 +111,7 @@
                                 $i = 1;
                             @endphp
                             @foreach ($this->exampleList as $list)
-                                <tr>
+                                <tr wire:key="example-{{ $list->id }}">
                                     <td>
                                         <div class="flex items-center">
                                             <p>{{ ($this->exampleList->currentPage() - 1) * $limit + $i }}</p>
@@ -176,7 +176,7 @@
                                             @canAccess('example.manage.update')
                                             <a
                                                 class="btn-icon warning has-tooltip group"
-                                                href="{{ backend_route('example.form', ['id' => $list->id]) }}"
+                                                :href="withBack('{{ backend_route('example.form', ['id' => $list->id]) }}')"
                                                 wire:navigate
                                             >
                                                 <span class="fa-solid fa-edit"></span>
@@ -186,17 +186,23 @@
                                             @canAccess('example.manage.delete')
                                             <button
                                                 class="btn-icon danger has-tooltip group"
+                                                data-title="Delete Example"
+                                                data-message="Are you sure you want to delete &quot;{{ $list->text }}&quot;? This action cannot be undone."
+                                                data-confirm="Yes, Delete"
+                                                data-cancel="Cancel"
+                                                data-token="{{ $list->delete_token }}"
+                                                data-component="{{ $this->getId() }}"
                                                 type="button"
-                                                wire:click="$dispatch('confirm-dialog', {
-                                                    title: 'Delete Example',
-                                                    message: 'Are you sure you want to delete this &quot;{{ addslashes($list->text) }}&quot; data? This action cannot be undone.',
-                                                    confirmText: 'Yes, Delete',
-                                                    cancelText: 'Cancel',
+                                                @click="$dispatch('confirm-dialog', {
+                                                    title: $el.dataset.title,
+                                                    message: $el.dataset.message,
+                                                    confirmText: $el.dataset.confirm,
+                                                    cancelText: $el.dataset.cancel,
                                                     confirmColor: 'danger',
                                                     icon: 'fa-solid fa-trash',
                                                     wireMethod: 'delete',
-                                                    wireParams: ['{{ $list->delete_token }}'],
-                                                    wireComponent: '{{ $this->getId() }}'
+                                                    wireParams: [$el.dataset.token],
+                                                    wireComponent: $el.dataset.component
                                                 })"
                                             >
                                                 <span class="fa-solid fa-trash"></span>
@@ -248,7 +254,7 @@
                     id="filterOption"
                     name="filterOption"
                     wire:model.live="filterOption"
-                    :options="$options"
+                    :options="$this->options"
                 >
                 </x-synapse-select>
             </div>
@@ -260,7 +266,7 @@
                 <x-synapse-adv-select
                     wire-model="filterCategories"
                     :live="true"
-                    :options="$categories"
+                    :options="$this->categories"
                     :multiple="true"
                     placeholder="Select categories"
                 />
