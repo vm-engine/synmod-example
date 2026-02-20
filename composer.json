@@ -1,6 +1,6 @@
 {
     "name": "vm-engine/synmod-example",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "Example module demonstrating Laravel Synapse modular architecture patterns with CRUD, ACL, and filtering",
     "keywords": [
         "laravel",

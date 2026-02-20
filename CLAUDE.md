@@ -29,11 +29,17 @@ These namespaces are defined in `composer.json` autoload section.
 
 ### Service Provider Registration
 
-Livewire components are manually registered in `ExampleServiceProvider::register()`:
+Livewire components are auto-registered via `AutoRegistersComponents` trait using Livewire v4's `addNamespace()`:
 
 ```php
-Livewire::component('example::button-sample', ButtonSample::class);
-Livewire::component('example-list', ExampleList::class);
+// In ExampleServiceProvider::register()
+$this->registerComponents(); // auto-discovers all Livewire components
+```
+
+Components are referenced with namespace notation:
+```blade
+<livewire:example::button-sample />
+<livewire:example::category-form />
 ```
 
 ### ACL (Access Control)

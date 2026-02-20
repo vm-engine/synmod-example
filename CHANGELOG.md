@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-02-20
+
+### Fixed
+- Fixed pagination bug: deleting the last item on a page now correctly loads the previous page content (computed cache invalidation after `setPage()`)
+- Added missing pagination adjustment to category-list delete method
+
+### Changed
+- Updated all Livewire component references from dot notation to namespace notation (`example.component` → `example::component`) for Synapse v2.2.0 compatibility
+  - Routes in `web.backend.php`
+  - Livewire tags in Blade views (`category-list`, `example-page`)
+  - Event dispatch target in `category-form`
+  - All Livewire test references in `ExampleTest.php`
+- Updated CLAUDE.md to reflect auto-registration via `AutoRegistersComponents` trait
+
+## [2.0.0] - 2026-02-20
+
+### Changed
+- Migrated to Volt single-file components
+- List state preservation improvements
+- UX improvements
+
 ## [1.0.3] - 2025-12-26
 
 ### Added
@@ -67,7 +88,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Form Validation**: Email, password complexity, required fields
 - **File Management**: Upload and deletion of document files
 
-[Unreleased]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.3...HEAD
+[Unreleased]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v2.0.1...HEAD
+[2.0.1]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v2.0.0...v2.0.1
+[2.0.0]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.3...v2.0.0
 [1.0.3]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.2...v1.0.3
 [1.0.2]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.1...v1.0.2
 [1.0.1]: https://repo.4visionmedia.com/vm-engine/synmod-example/compare/v1.0.0...v1.0.1

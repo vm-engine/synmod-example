@@ -129,6 +129,13 @@ new class extends Component
             title: 'Success',
             message: __('example::labels.category_deleted'),
         );
+
+        unset($this->categoryList);
+        $lastPage = $this->categoryList->lastPage();
+        if ($this->getPage() > $lastPage) {
+            $this->setPage($lastPage);
+            unset($this->categoryList);
+        }
     }
 
     #[Computed()]

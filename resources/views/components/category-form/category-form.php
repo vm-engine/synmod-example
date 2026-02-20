@@ -51,6 +51,6 @@ new class extends Component
         );
 
         $this->dispatch('close-modal-category-form');
-        $this->dispatch('$refresh')->to('example.category-list');
+        $this->dispatch('$refresh')->to('example::category-list');
     }
 };

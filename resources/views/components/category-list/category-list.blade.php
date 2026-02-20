@@ -227,6 +227,6 @@
         name="category-form"
         maxWidth="2xl"
     >
-        <livewire:example.category-form />
+        <livewire:example::category-form />
     </x-synapse-modal>
 </div>

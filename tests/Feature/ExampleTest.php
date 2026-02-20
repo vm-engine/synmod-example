@@ -70,7 +70,7 @@ describe('Create Example', function () {
         $category = ExampleCategory::factory()->create();
 
         Livewire::actingAs($this->user)
-            ->test('example.example-form')
+            ->test('example::example-form')
             ->set('form.category_id', $category->id)
             ->set('form.text', 'Test Example')
             ->set('form.textarea', 'Test textarea content')
@@ -97,7 +97,7 @@ describe('Create Example', function () {
 
     it('validates required fields when creating', function () {
         Livewire::actingAs($this->user)
-            ->test('example.example-form')
+            ->test('example::example-form')
             ->set('form.text', '')
             ->set('form.email', '')
             ->set('form.protected', '')
@@ -111,7 +111,7 @@ describe('Create Example', function () {
 
     it('validates email format when creating', function () {
         Livewire::actingAs($this->user)
-            ->test('example.example-form')
+            ->test('example::example-form')
             ->set('form.text', 'Test')
             ->set('form.email', 'invalid-email')
             ->set('form.protected', 'Test@123!')
@@ -123,7 +123,7 @@ describe('Create Example', function () {
 
     it('validates password complexity when creating', function () {
         Livewire::actingAs($this->user)
-            ->test('example.example-form')
+            ->test('example::example-form')
             ->set('form.text', 'Test')
             ->set('form.email', 'test@example.com')
             ->set('form.protected', 'simple')
@@ -143,7 +143,7 @@ describe('Update Example', function () {
         ]);
 
         Livewire::actingAs($this->user)
-            ->test('example.example-form', ['id' => $example->id])
+            ->test('example::example-form', ['id' => $example->id])
             ->assertSet('form.text', 'Original Text')
             ->assertSet('form.email', 'original@example.com')
             ->set('form.text', 'Updated Text')
@@ -169,7 +169,7 @@ describe('Update Example', function () {
         $example = Example::factory()->create();
 
         Livewire::actingAs($this->user)
-            ->test('example.example-form', ['id' => $example->id])
+            ->test('example::example-form', ['id' => $example->id])
             ->set('form.text', '')
             ->set('form.email', '')
             ->call('save')
@@ -182,7 +182,7 @@ describe('Update Example', function () {
     it('redirects when trying to edit non-existent example', function () {
         $this->actingAs($this->user);
 
-        Livewire::test('example.example-form', ['id' => 99999])
+        Livewire::test('example::example-form', ['id' => 99999])
             ->assertRedirect(backend_route('example.index'))
             ->assertSessionHas('danger', 'Data not found.');
     });
@@ -200,7 +200,7 @@ describe('Delete Example', function () {
         ]);
 
         Livewire::actingAs($this->user)
-            ->test('example.example-list')
+            ->test('example::example-list')
             ->call('delete', $example->delete_token)
             ->assertDispatched('notify');
 
@@ -211,7 +211,7 @@ describe('Delete Example', function () {
 
     it('handles deleting non-existent example gracefully', function () {
         Livewire::actingAs($this->user)
-            ->test('example.example-list')
+            ->test('example::example-list')
             ->call('delete', 'invalid-token')
             ->assertDispatched('notify');
 
@@ -251,7 +251,7 @@ describe('List Filtering', function () {
 
     it('can filter by search query', function () {
         $component = Livewire::actingAs($this->user)
-            ->test('example.example-list')
+            ->test('example::example-list')
             ->set('q', 'Laravel');
 
         $results = $component->get('exampleList');
@@ -262,7 +262,7 @@ describe('List Filtering', function () {
 
     it('requires minimum 3 characters for search', function () {
         $component = Livewire::actingAs($this->user)
-            ->test('example.example-list')
+            ->test('example::example-list')
             ->set('q', 'La');
 
         $results = $component->get('exampleList');
@@ -273,7 +273,7 @@ describe('List Filtering', function () {
 
     it('can filter by dropdown option', function () {
         $component = Livewire::actingAs($this->user)
-            ->test('example.example-list')
+            ->test('example::example-list')
             ->set('filterOption', 5);
 
         $results = $component->get('exampleList');
@@ -283,7 +283,7 @@ describe('List Filtering', function () {
 
     it('can filter by category', function () {
         $component = Livewire::actingAs($this->user)
-            ->test('example.example-list')
+            ->test('example::example-list')
             ->set('filterCategories', [$this->category1->id]);
 
         $results = $component->get('exampleList');
@@ -295,7 +295,7 @@ describe('List Filtering', function () {
 
     it('can filter by multiple categories', function () {
         $component = Livewire::actingAs($this->user)
-            ->test('example.example-list')
+            ->test('example::example-list')
             ->set('filterCategories', [$this->category1->id, $this->category2->id]);
 
         $results = $component->get('exampleList');
@@ -305,7 +305,7 @@ describe('List Filtering', function () {
 
     it('can combine search and dropdown filter', function () {
         $component = Livewire::actingAs($this->user)
-            ->test('example.example-list')
+            ->test('example::example-list')
             ->set('q', 'Framework')
             ->set('filterOption', 5);
 
@@ -316,7 +316,7 @@ describe('List Filtering', function () {
 
     it('can combine all filters together', function () {
         $component = Livewire::actingAs($this->user)
-            ->test('example.example-list')
+            ->test('example::example-list')
             ->set('q', 'Framework')
             ->set('filterOption', 5)
             ->set('filterCategories', [$this->category1->id]);
@@ -328,7 +328,7 @@ describe('List Filtering', function () {
 
     it('can sort data ascending and descending', function () {
         Livewire::actingAs($this->user)
-            ->test('example.example-list')
+            ->test('example::example-list')
             ->call('sortData', 'text')
             ->assertSet('sort', 'text')
             ->assertSet('sortDirection', 'asc')
@@ -338,7 +338,7 @@ describe('List Filtering', function () {
 
     it('resets page when filters are updated', function () {
         Livewire::actingAs($this->user)
-            ->test('example.example-list')
+            ->test('example::example-list')
             ->set('q', 'test')
             ->assertSet('q', 'test');
 
@@ -348,7 +348,7 @@ describe('List Filtering', function () {
 
     it('can toggle category filter', function () {
         $component = Livewire::actingAs($this->user)
-            ->test('example.example-list')
+            ->test('example::example-list')
             ->call('filterByCategory', $this->category1->id)
             ->assertSet('filterCategories', [$this->category1->id])
             ->call('filterByCategory', $this->category1->id)

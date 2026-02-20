@@ -138,6 +138,7 @@ new class extends Component
         $lastPage = $this->exampleList->lastPage();
         if ($this->getPage() > $lastPage) {
             $this->setPage($lastPage);
+            unset($this->exampleList);
         }
     }
 
