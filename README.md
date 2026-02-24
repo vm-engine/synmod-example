@@ -7,11 +7,12 @@ A reference implementation demonstrating Laravel Synapse modular architecture pa
 This module serves as an example and template for building package modules in Laravel Synapse projects. It showcases best practices for:
 
 - Modular architecture with proper namespace organization
-- Livewire v3 components with Form Objects pattern
+- Livewire v4 MFC/SFC (Multi-File and Single-File Component) patterns
 - ACL (Access Control List) implementation with hierarchical permissions
 - Backend navigation with multi-level menus
 - Model factories and seeders
 - Testing with Pest
+- Session-based filter/sort state persistence
 
 ## Installation
 
@@ -57,9 +58,9 @@ npm run build
 
 ## Features
 
-- **Example Management**: CRUD operations for example records
+- **Example Management**: CRUD operations for example records with correct browser page titles
 - **Category Management**: Organize examples by categories
-- **Advanced Filtering**: Search, filter by dropdown options and categories
+- **Advanced Filtering**: Search, filter by dropdown options and categories with session-based state persistence
 - **File Uploads**: Handle document uploads (PDF, DOC, XLS, PPT)
 - **Form Validation**: Comprehensive validation including password rules
 - **ACL Integration**: Fine-grained permission controls
@@ -69,18 +70,26 @@ npm run build
 ```
 packages/synmod-example/
 ├── src/
-│   ├── ExampleServiceProvider.php
-│   ├── Models/
-│   │   ├── Example.php
-│   │   └── ExampleCategory.php
-│   └── Livewire/
-│       ├── ExampleList.php
-│       ├── ExampleForm.php
-│       ├── CategoryList.php
-│       ├── CategoryForm.php
-│       └── Forms/
-│           ├── ExampleFormObject.php
-│           └── CategoryFormObject.php
+│   ├── ExampleServiceProvider.php          # Auto-registers components via AutoRegistersComponents
+│   └── Models/
+│       ├── Example.php
+│       └── ExampleCategory.php
+├── resources/views/components/             # MFC Livewire components (Livewire v4)
+│   ├── ⚡example-list/
+│   │   ├── example-list.php
+│   │   └── example-list.blade.php
+│   ├── ⚡example-form/
+│   │   ├── example-form.php
+│   │   └── example-form.blade.php
+│   ├── ⚡category-list/
+│   │   ├── category-list.php
+│   │   └── category-list.blade.php
+│   ├── ⚡category-form/
+│   │   ├── category-form.php
+│   │   └── category-form.blade.php
+│   └── ⚡example-page/
+│       ├── example-page.php
+│       └── example-page.blade.php
 ├── database/
 │   ├── migrations/
 │   ├── factories/
@@ -88,12 +97,13 @@ packages/synmod-example/
 ├── routes/
 │   ├── web.backend.php
 │   └── web.php
-├── resources/views/
 ├── lang/en/
 ├── tests/
 ├── module.json
 └── composer.json
 ```
+
+> **Note:** This module uses the MFC (Multi-File Component) format introduced in Synapse v2.0. Components live in `resources/views/components/` rather than `src/Livewire/`.
 
 ## Namespace Structure
 
@@ -128,48 +138,81 @@ All backend routes are automatically prefixed with `/admin/example/` and require
 
 **IMPORTANT:** Tests for this module **must be run from the parent Laravel project**, not from within the module directory itself.
 
-This is because the module has dependencies on:
-- Laravel Synapse (`vm-engine/synapse`)
-- SynApps Auth (`vm-engine/synapps-auth`)
-
-These dependencies make it impractical to test in isolation using Orchestra Testbench. The module requires a full Laravel application with Synapse and Auth modules installed.
-
 From the parent Laravel project root:
 
 ```bash
-# Run all tests
-./vendor/bin/pest
-
-# Run this module's tests specifically (use vendor path, not packages)
-./vendor/bin/pest vendor/vm-engine/synmod-example/tests
+# Run this module's tests (use packages path for local development)
+php vendor/bin/pest packages/synmod-example/tests
 
 # Run specific test
-./vendor/bin/pest --filter="can create an example"
+php vendor/bin/pest --filter="can create an example"
 ```
 
-**Note:** When testing, use the `vendor/vm-engine/synmod-example/tests` path (not `packages/synmod-example/tests`) to reflect the actual deployment structure when the module is released via Composer.
+**Note:** When the module is released via Composer, use the `vendor/vm-engine/synmod-example/tests` path instead.
 
 ### Code Quality
 
 ```bash
-# Fix code style (use vendor path)
-./vendor/bin/pint vendor/vm-engine/synmod-example
+# Fix code style (from project root)
+php vendor/bin/pint packages/synmod-example/
+
+# PHPStan analysis (from project root)
+php vendor/bin/phpstan analyse --configuration=packages/synmod-example/phpstan.neon
 ```
 
 ## Key Patterns
 
-### Livewire Form Objects
+### MFC Component Format
 
-This module demonstrates the Form Objects pattern for cleaner component code:
+Components use Livewire v4's Multi-File Component format with anonymous classes:
 
 ```php
-class ExampleFormObject extends Form
+// resources/views/components/⚡example-list/example-list.php
+<?php
+
+use Livewire\Component;
+
+new class extends Component {
+    // component logic
+
+    public function render()
+    {
+        return $this->view()->title(page_title($this->title()));
+    }
+};
+```
+
+```blade
+{{-- resources/views/components/⚡example-list/example-list.blade.php --}}
+<div>
+    {{-- component view --}}
+</div>
+```
+
+### Page Titles
+
+Full-page MFC components set browser `<title>` in `render()`:
+
+```php
+public function render()
 {
-    public function setExample(Example $example): void { }
-    public function store(): void { }
-    public function update(): void { }
-    public function rules(): array { }
+    return $this->view()->title(page_title($this->title()));
 }
+```
+
+### Namespace Notation
+
+All Livewire component references use namespace notation (Synapse v2.2+):
+
+```blade
+{{-- In Blade views --}}
+<livewire:example::example-list />
+<livewire:example::category-list />
+```
+
+```php
+// In route files
+Route::livewire('/example', 'example::example-list');
 ```
 
 ### URL State Management
@@ -177,11 +220,27 @@ class ExampleFormObject extends Form
 Filters persist in URL for shareable states:
 
 ```php
-#[Url()] public $q;
-#[Url()] public $filterCategories = [];
+#[Url()] public string $q = '';
+#[Url()] public array $filterCategories = [];
 ```
 
-### Query Scopes (Laravel 11+)
+### Component Auto-Registration
+
+Components are auto-registered via the `AutoRegistersComponents` trait — no manual registration needed:
+
+```php
+class ExampleServiceProvider extends ServiceProvider
+{
+    use AutoRegistersComponents;
+
+    public function register(): void
+    {
+        $this->registerComponents();
+    }
+}
+```
+
+### Query Scopes (Laravel 12+)
 
 Uses attribute syntax for cleaner scope definitions:
 
@@ -196,8 +255,9 @@ protected function search(Builder $builder, string $q): void
 ## Requirements
 
 - Laravel 12
-- Livewire v3
-- Laravel Synapse (vm-engine/synapse)
+- Livewire v4
+- vm-engine/synapse ^2.2
+- vm-engine/synapps-auth ^2.0
 
 ## License
 
@@ -210,4 +270,4 @@ Email: theadods@gmail.com
 
 ## Version
 
-1.0.0
+2.0.2
