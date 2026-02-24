@@ -185,4 +185,9 @@ new class extends Component
             icon: 'fa-solid fa-list',
         );
     }
+
+    public function render()
+    {
+        return $this->view()->title(page_title($this->title()));
+    }
 };

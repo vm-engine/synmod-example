@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.2] - 2026-02-24
+
+### Fixed
+- **Page titles**: Added `render()` method to `example-list` and `example-form` full-page SFC components to correctly set the browser `<title>` tag via `$this->view()->title(page_title($this->title()))`
+
+### Changed
+- **PHPStan config**: Completed `phpstan.neon` with `includes`, `level`, and `paths` so `--configuration` flag works correctly
+
 ## [2.0.1] - 2026-02-20
 
 ### Fixed

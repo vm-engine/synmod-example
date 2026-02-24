@@ -85,4 +85,9 @@ new class extends Component
             icon: 'fa-solid fa-pen',
         );
     }
+
+    public function render()
+    {
+        return $this->view()->title(page_title($this->title()));
+    }
 };
