@@ -15,11 +15,7 @@ beforeEach(function () {
     $permission = RolePermission::factory()
         ->forModule('example', 'manage')
         ->fullCrud();
-    $this->adminRole = Role::factory()->has($permission)->create([
-        'name' => 'Administrator',
-        'slug' => 'admin',
-        'level' => 5,
-    ]);
+    $this->adminRole = Role::factory()->admin()->has($permission)->create();
     $this->user = User::factory()->create();
     $this->user->roles()->attach($this->adminRole);
 });

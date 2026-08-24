@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use VmEngine\Example\Models\ExampleCategory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\VmEngine\Example\Models\ExampleCategory>
+ * @extends Factory<ExampleCategory>
  */
 class ExampleCategoryFactory extends Factory
 {

@@ -2,6 +2,32 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⚠️ Git Policy
+
+**NEVER commit/push without explicit user approval.** Always show changes and wait for user confirmation.
+
+## ⚠️ composer.json Versioning
+
+**IMPORTANT for local development and releases:**
+
+- `composer.json` in this package has a `"version"` key for **local development only** (currently: `2.0.1-dev`)
+- This version is required for path repository constraint resolution in the main project
+- **BEFORE COMMITTING** any changes:
+  - If **only the version key changed** → Remove the entire `"version"` line before committing
+  - If **other fields changed** along with version → Revert the version key to `"2.0.1-dev"` and keep other changes
+- **BEFORE RELEASING**:
+  - Remove the `"version"` key entirely from `composer.json`
+  - Create a git tag: `git tag v{X.Y.Z}` (e.g., `git tag v2.0.1`)
+  - Push the tag: `git push origin v{X.Y.Z}`
+  - Composer will read the version from the git tag automatically
+
+**Workflow:**
+```bash
+# During development: version key is present (2.0.1-dev)
+# Before committing: remove or revert version key
+# Before releasing: no version key, use git tag instead
+```
+
 ---
 
 ## Project Overview

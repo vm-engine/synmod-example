@@ -21,7 +21,8 @@
                         <button
                             class="btn primary"
                             type="button"
-                            @click="$dispatch('open-modal-category-form'); $wire.dispatch('reset-category-form')"
+                            @click="$dispatch('open-modal-category-form')"
+                            wire:click="$dispatch('reset-category-form')"
                         >
                             <span class="fa-solid fa-plus"></span>
                             {{ __('example::labels.add') }}
@@ -122,7 +123,8 @@
                                                 title="Toggle Status"
                                                 :inline="true"
                                                 :checked="$category->is_active"
-                                                @change="active = !active; $wire.toggleActive({{ $category->id }})"
+                                                @change="active = !active"
+                                                wire:change="toggleActive({{ $category->id }})"
                                                 activeColor="green"
                                             />
                                         @else
@@ -140,7 +142,8 @@
                                             <button
                                                 class="btn-icon warning has-tooltip group"
                                                 type="button"
-                                                @click="$dispatch('open-modal-category-form'); $wire.dispatch('load-category', { id: {{ $category->id }} })"
+                                                @click="$dispatch('open-modal-category-form')"
+                                                wire:click="$dispatch('load-category', { id: {{ $category->id }} })"
                                             >
                                                 <span class="fa-solid fa-edit"></span>
                                                 <span class="tooltip">{{ __('example::labels.edit') }}</span>

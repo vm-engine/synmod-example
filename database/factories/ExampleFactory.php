@@ -7,7 +7,7 @@ use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends Factory<Example>
  */
 class ExampleFactory extends Factory
 {

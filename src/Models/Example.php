@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use VmEngine\Example\Factories\ExampleFactory;
 use VmEngine\Synapse\Traits\WithDeleteToken;
 
@@ -24,11 +25,11 @@ use VmEngine\Synapse\Traits\WithDeleteToken;
  * @property int $radio
  * @property array $checkbox
  * @property string $date
- * @property \Illuminate\Support\Carbon $datetime
+ * @property Carbon $datetime
  * @property string $file
  * @property string $color
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property-read ExampleCategory $category
  */
 class Example extends Model

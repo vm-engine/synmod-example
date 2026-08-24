@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use VmEngine\Example\Factories\ExampleCategoryFactory;
 use VmEngine\Synapse\Traits\WithDeleteToken;
@@ -17,8 +18,8 @@ use VmEngine\Synapse\Traits\WithDeleteToken;
  * @property string $slug
  * @property string $description
  * @property bool $is_active
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class ExampleCategory extends Model
 {

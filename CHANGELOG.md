@@ -5,7 +5,17 @@ All notable changes to `vm-engine/synmod-example` will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.0.0] - Unreleased
+
+### Changed
+- **Requires Laravel ^11.0|^12.0|^13.0** (added `^13.0` support) and `vm-engine/synapse` ^2.1|^3.0 — supports synapse's new default CSP-safe Alpine.js build.
+
+### Fixed
+- **CSP-safe Alpine.js compatibility.** `category-form`, `category-list`, and `example-list` migrated off inline `x-data="{ ... }"` object literals with methods and multi-statement `@click`/`x-on:*` expressions to the `Alpine.data()` registry pattern (required by `vm-engine/synapse` ^3.0's new default CSP-safe Alpine build), guarded against the `alpine:init`/`wire:navigate` timing race. `example-list`'s use of the `withBack()` global JS helper switched to the `$withBack()` Alpine magic, since bare globals aren't resolvable inside a CSP-restricted directive expression.
+- `ExampleFactory`'s `@extends Factory<...>` PHPDoc referenced a nonexistent `App\Models\Model` placeholder type instead of the actual `Example` model — flagged by PHPStan level 5.
+
+### Documentation
+- `CLAUDE.md`: added the `composer.json` local-dev `version` key policy and git commit/push approval policy.
 
 ## [2.0.2] - 2026-02-24
 

@@ -21,7 +21,7 @@
                     <div>
                         <a
                             class="btn primary"
-                            :href="withBack('{{ backend_route('example.form') }}')"
+                            :href="$withBack('{{ backend_route('example.form') }}')"
                             wire:navigate
                         >
                             <span class="fa-solid fa-plus"></span>
@@ -176,7 +176,7 @@
                                             @canAccess('example.manage.update')
                                             <a
                                                 class="btn-icon warning has-tooltip group"
-                                                :href="withBack('{{ backend_route('example.form', ['id' => $list->id]) }}')"
+                                                :href="$withBack('{{ backend_route('example.form', ['id' => $list->id]) }}')"
                                                 wire:navigate
                                             >
                                                 <span class="fa-solid fa-edit"></span>
