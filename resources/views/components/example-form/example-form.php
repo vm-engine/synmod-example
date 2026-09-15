@@ -70,7 +70,7 @@ new class extends Component
     #[Computed()]
     public function options(): array
     {
-        return range(1, 9);
+        return array_map(fn ($n) => ['value' => $n, 'label' => (string) $n], range(1, 9));
     }
 
     #[Computed()]

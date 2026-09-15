@@ -161,9 +161,9 @@ new class extends Component
     public function statusOptions(): array
     {
         return [
-            'all' => __('example::labels.all'),
-            'active' => __('example::labels.active'),
-            'inactive' => __('example::labels.inactive'),
+            ['value' => 'all', 'label' => __('example::labels.all')],
+            ['value' => 'active', 'label' => __('example::labels.active')],
+            ['value' => 'inactive', 'label' => __('example::labels.inactive')],
         ];
     }
 

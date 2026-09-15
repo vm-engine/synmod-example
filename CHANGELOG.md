@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **CSP-safe Alpine.js compatibility.** `category-form`, `category-list`, and `example-list` migrated off inline `x-data="{ ... }"` object literals with methods and multi-statement `@click`/`x-on:*` expressions to the `Alpine.data()` registry pattern (required by `vm-engine/synapse` ^3.0's new default CSP-safe Alpine build), guarded against the `alpine:init`/`wire:navigate` timing race. `example-list`'s use of the `withBack()` global JS helper switched to the `$withBack()` Alpine magic, since bare globals aren't resolvable inside a CSP-restricted directive expression.
 - `ExampleFactory`'s `@extends Factory<...>` PHPDoc referenced a nonexistent `App\Models\Model` placeholder type instead of the actual `Example` model — flagged by PHPStan level 5.
+- Migrated the remaining `<x-synapse-select>`/`<x-synapse-multiselect>` usages (removed from `vm-engine/synapse` v3.0) to `<x-synapse-adv-select>` in `category-list`, `example-form`, and `example-list` — these views were throwing unknown-component errors. `statusOptions()`/`options()` reshaped to the value/label array format the new component requires.
 
 ### Documentation
 - `CLAUDE.md`: added the `composer.json` local-dev `version` key policy and git commit/push approval policy.

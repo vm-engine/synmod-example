@@ -90,12 +90,10 @@
                     </div>
                     <div class="form-box required">
                         <label for="dropdown">{{ __('example::labels.forms.dropdown') }}</label>
-                        <x-synapse-select
-                            id="dropdown"
-                            name="dropdown"
+                        <x-synapse-adv-select
+                            wire-model="form.dropdown"
                             :options="$this->options"
-                            wire:model="form.dropdown"
-                        ></x-synapse-select>
+                        />
                         @error('form.dropdown')
                             <p class="form-error-message">
                                 {{ $message }}
@@ -104,16 +102,11 @@
                     </div>
                     <div class="form-box required">
                         <label for="multidropdown">{{ __('example::labels.forms.multidropdown') }}</label>
-                        <x-synapse-multiselect
-                            class="@error('form.multidropdown') has-error @enderror"
-                            :name="'multidropdown'"
+                        <x-synapse-adv-select
+                            wire-model="form.multidropdown"
+                            :multiple="true"
                             :options="$this->options"
-                            :model="$form->multidropdown"
-                            @class([
-                                'has-error' => $errors->has('form.multidropdown'),
-                            ])
-                            wire:model="form.multidropdown"
-                        ></x-synapse-multiselect>
+                        />
                         @error('form.multidropdown')
                             <p class="form-error-message">
                                 {{ $message }}

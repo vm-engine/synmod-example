@@ -168,7 +168,10 @@ new class extends Component
     #[Computed()]
     public function options(): array
     {
-        return ['all' => '-- All --'] + Example::$options;
+        return array_merge(
+            [['value' => 'all', 'label' => '-- All --']],
+            array_map(fn ($n) => ['value' => $n, 'label' => (string) $n], Example::$options),
+        );
     }
 
     #[Computed()]

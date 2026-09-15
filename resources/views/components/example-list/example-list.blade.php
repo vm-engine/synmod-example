@@ -101,7 +101,7 @@
                                         </a>
                                     </div>
                                 </th>
-                                <th>
+                                <th class="datatable-col-actions">
                                     <p>Actions</p>
                                 </th>
                             </tr>
@@ -250,13 +250,11 @@
                 <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Dropdown Option
                 </label>
-                <x-synapse-select
-                    id="filterOption"
-                    name="filterOption"
-                    wire:model.live="filterOption"
+                <x-synapse-adv-select
+                    wire-model="filterOption"
+                    :live="true"
                     :options="$this->options"
-                >
-                </x-synapse-select>
+                />
             </div>
 
             <div>

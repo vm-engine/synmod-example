@@ -215,13 +215,11 @@
             <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {{ __('example::labels.status_filter') }}
             </label>
-            <x-synapse-select
-                id="filterStatus"
-                name="filterStatus"
-                wire:model.live="filterStatus"
+            <x-synapse-adv-select
+                wire-model="filterStatus"
+                :live="true"
                 :options="$this->statusOptions"
-            >
-            </x-synapse-select>
+            />
         </div>
     </x-synapse-drawer>
 
