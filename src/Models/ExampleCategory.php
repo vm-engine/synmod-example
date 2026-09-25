@@ -23,7 +23,9 @@ use VmEngine\Synapse\Traits\WithDeleteToken;
  */
 class ExampleCategory extends Model
 {
+    /** @use HasFactory<ExampleCategoryFactory> */
     use HasFactory;
+
     use WithDeleteToken;
 
     protected $fillable = [
@@ -37,7 +39,7 @@ class ExampleCategory extends Model
         'is_active' => 'boolean',
     ];
 
-    protected static function newFactory()
+    protected static function newFactory(): ExampleCategoryFactory
     {
         return ExampleCategoryFactory::new();
     }
@@ -59,18 +61,21 @@ class ExampleCategory extends Model
         // static::deleteBooted();
     }
 
+    /** @param  Builder<self>  $builder */
     #[Scope]
     protected function search(Builder $builder, string $q): void
     {
         $builder->whereAny(['name', 'description'], 'like', "%{$q}%");
     }
 
+    /** @param  Builder<self>  $builder */
     #[Scope]
     protected function active(Builder $builder): void
     {
         $builder->where('is_active', true);
     }
 
+    /** @return HasMany<Example, $this> */
     public function examples(): HasMany
     {
         return $this->hasMany(Example::class, 'category_id');

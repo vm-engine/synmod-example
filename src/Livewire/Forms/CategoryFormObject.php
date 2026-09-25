@@ -27,7 +27,8 @@ class CategoryFormObject extends Form
         $this->is_active = $category->is_active;
     }
 
-    public function rules()
+    /** @return array<string, mixed> */
+    public function rules(): array
     {
         $categoryId = $this->category?->id;
 

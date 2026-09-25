@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.0.0] - Unreleased
 
 ### Changed
+- PHPStan level 7 with no ignore list: typed `rules()`, form array properties, `?TemporaryUploadedFile $file`, `newFactory()` returns, `HasFactory` generics, scope builders and relation generics. `/build/` added to `.gitignore`.
+
+### Changed
 - **Requires Laravel ^11.0|^12.0|^13.0** (added `^13.0` support) and `vm-engine/synapse` ^2.1|^3.0 — supports synapse's new default CSP-safe Alpine.js build.
 
 ### Fixed

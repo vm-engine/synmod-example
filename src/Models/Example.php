@@ -21,9 +21,9 @@ use VmEngine\Synapse\Traits\WithDeleteToken;
  * @property int $masked
  * @property string $textarea
  * @property int $dropdown
- * @property array $multidropdown
+ * @property array<int, int|string> $multidropdown
  * @property int $radio
- * @property array $checkbox
+ * @property array<int, int|string> $checkbox
  * @property string $date
  * @property Carbon $datetime
  * @property string $file
@@ -34,7 +34,9 @@ use VmEngine\Synapse\Traits\WithDeleteToken;
  */
 class Example extends Model
 {
+    /** @use HasFactory<ExampleFactory> */
     use HasFactory;
+
     use WithDeleteToken;
 
     protected $fillable = [
@@ -61,21 +63,24 @@ class Example extends Model
         'datetime' => 'datetime',
     ];
 
-    public static $options = [
+    /** @var list<int> */
+    public static array $options = [
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     ];
 
-    protected static function newFactory()
+    protected static function newFactory(): ExampleFactory
     {
         return ExampleFactory::new();
     }
 
+    /** @param  Builder<self>  $builder */
     #[Scope]
     protected function search(Builder $builder, string $q): void
     {
         $builder->whereAny(['text', 'textarea', 'email'], 'like', "%{$q}%");
     }
 
+    /** @return BelongsTo<ExampleCategory, $this> */
     public function category(): BelongsTo
     {
         return $this->belongsTo(ExampleCategory::class, 'category_id');
