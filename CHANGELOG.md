@@ -7,16 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.0.0] - Unreleased
 
-### Changed
-- PHPStan level 7 with no ignore list: typed `rules()`, form array properties, `?TemporaryUploadedFile $file`, `newFactory()` returns, `HasFactory` generics, scope builders and relation generics. `/build/` added to `.gitignore`.
+### Added
+- **Pattern Catalog** (`/example/catalog`, first menu item, `example.any`): registry-driven index of every list/form/page/component/integration pattern the module demonstrates or will (`src/Catalog/PatternCatalog.php`, 57 entries, built vs planned), card grid with search, group chips, built-only toggle, progress bar and `x-synapse-copy-button` source paths. Guard tests keep built entries pointing at real routes and files.
+- Showcase schema via additive migrations: `examples.slug` (unique, backfilled for existing rows), `status` (`ExampleStatus` enum: draft/review/published with label + synapse color), `due_at`, `content`, `meta` (JSON), `position`, `created_by`/`updated_by` (`HasCreator`/`HasUpdater`), soft deletes.
+- `ExampleTag` (many-to-many), `ExampleNode` (self-referencing tree), `ExampleAttachment` (files deleted with the row and on example force delete) with factories; `ExampleFactory` states `draft()`/`review()`/`published()`/`dueThisMonth()`/`withTags()`.
+- Seeders: 8 tags, 60 examples (even status spread, 20 due this month, 1-3 tags each), 30-node three-level tree.
 
 ### Changed
-- **Requires Laravel ^11.0|^12.0|^13.0** (added `^13.0` support) and `vm-engine/synapse` ^2.1|^3.0 — supports synapse's new default CSP-safe Alpine.js build.
+- **Requires `vm-engine/synapse` ^3.2 and `vm-engine/synapps-auth` ^3.0**, Laravel ^11.0|^12.0|^13.0.
+- `example-list` / `category-list` on synapse conventions: `WithSortablePagination` (whitelisted sort fields), `x-synapse-panel`, `-search-box` (filter drawer in the trailing slot), `-sort-icon`, `-per-page-selector`; status badge column; drawer titles computed in the class (no `@php` in views).
+- Deleting an example is now a soft delete; its uploaded file is removed only on force delete.
+- Backend menu and form icons switched to Phosphor.
+- `declare(strict_types=1)` on every PHP file.
+- PHPStan level 7 with no ignore list (now covering `database/` too): typed `rules()`, form array properties, `?TemporaryUploadedFile $file`, `newFactory()` returns, `HasFactory` generics, scope builders and relation generics. `/build/` added to `.gitignore`.
 
 ### Fixed
 - **CSP-safe Alpine.js compatibility.** `category-form`, `category-list`, and `example-list` migrated off inline `x-data="{ ... }"` object literals with methods and multi-statement `@click`/`x-on:*` expressions to the `Alpine.data()` registry pattern (required by `vm-engine/synapse` ^3.0's new default CSP-safe Alpine build), guarded against the `alpine:init`/`wire:navigate` timing race. `example-list`'s use of the `withBack()` global JS helper switched to the `$withBack()` Alpine magic, since bare globals aren't resolvable inside a CSP-restricted directive expression.
 - `ExampleFactory`'s `@extends Factory<...>` PHPDoc referenced a nonexistent `App\Models\Model` placeholder type instead of the actual `Example` model — flagged by PHPStan level 5.
 - Migrated the remaining `<x-synapse-select>`/`<x-synapse-multiselect>` usages (removed from `vm-engine/synapse` v3.0) to `<x-synapse-adv-select>` in `category-list`, `example-form`, and `example-list` — these views were throwing unknown-component errors. `statusOptions()`/`options()` reshaped to the value/label array format the new component requires.
+- `category-list` had no page `<title>`; factories no longer pass `array|string` faker values to `ucfirst()`/`Str::slug()`.
+
+### Removed
+- Unused `example-page` / `button-sample` components (Bootstrap markup, CSP-blocked `alert()`), and the completed `docs/STRICT_TYPES_PLAN.md`.
 
 ### Documentation
 - `CLAUDE.md`: added the `composer.json` local-dev `version` key policy and git commit/push approval policy.

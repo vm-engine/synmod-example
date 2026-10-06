@@ -35,15 +35,23 @@
             "name": "__example::menu.be.parent",
             "position": 1,
             "class": "",
-            "icon": "fa-solid fa-table",
+            "icon": "ph ph-cube",
             "acl": "example.any",
             "sub": {
+                "catalog": {
+                    "id": "catalog",
+                    "name": "__example::menu.be.catalog",
+                    "route": "example.catalog",
+                    "class": "",
+                    "icon": "ph ph-squares-four",
+                    "acl": "example.any"
+                },
                 "index": {
                     "id": "index",
                     "name": "__example::menu.be.index",
                     "route": "example.index",
                     "class": "",
-                    "icon": "fa-solid fa-table",
+                    "icon": "ph ph-table",
                     "acl": "example.manage"
                 },
                 "category": {
@@ -51,7 +59,7 @@
                     "name": "__example::menu.be.category",
                     "route": "example.category",
                     "class": "",
-                    "icon": "fa-solid fa-folder",
+                    "icon": "ph ph-folder",
                     "acl": "example.category"
                 }
             }

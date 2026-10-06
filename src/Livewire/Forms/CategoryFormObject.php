@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VmEngine\Example\Livewire\Forms;
 
 use Livewire\Form;

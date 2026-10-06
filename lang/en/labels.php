@@ -38,6 +38,9 @@ return [
     'description' => 'Description',
     'is_active' => 'Is Active',
     'status_filter' => 'Status Filter',
+    'status_draft' => 'Draft',
+    'status_review' => 'In review',
+    'status_published' => 'Published',
 
     // Placeholders
     'enter_name' => 'Enter :name name',

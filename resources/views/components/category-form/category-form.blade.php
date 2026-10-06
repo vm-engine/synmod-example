@@ -126,7 +126,7 @@
             type="button"
             @click="$dispatch('close-modal-category-form')"
         >
-            <span class="fa-solid fa-times mr-1"></span>
+            <span class="ph ph-x mr-1"></span>
             {{ __('example::labels.cancel') }}
         </button>
         <button
@@ -134,7 +134,7 @@
             type="button"
             wire:click="save"
         >
-            <span class="fa-solid fa-save mr-1"></span>
+            <span class="ph ph-floppy-disk mr-1"></span>
             {{ __('example::labels.save') }}
         </button>
     </div>

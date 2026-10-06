@@ -79,10 +79,10 @@ new class extends Component
         return Breadcrumbs::make(
             'Example List',
             backend_route('example.index'),
-            'fa-solid fa-list',
+            'ph ph-table',
         )->add(
             label: 'Form',
-            icon: 'fa-solid fa-pen',
+            icon: 'ph ph-pencil-simple',
         );
     }
 

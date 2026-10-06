@@ -2,175 +2,122 @@
     @include('synapps::components.layouts.partials.loader')
     @include('synapps::components.layouts.partials.breadcrumbs', ['breadcrumbs' => $this->breadcrumbs])
 
-    <!-- Confirmation Dialog -->
     <x-synapse-confirm-dialog />
 
-    <!-- DataTales Example -->
     <div class="space-y-5 sm:space-y-6">
-
-        <div class="dark:bg-white/3 rounded-2xl border border-gray-200 bg-white dark:border-gray-800">
-
-            <div class="flex justify-between">
-                <div class="px-5 py-4 sm:px-6 sm:py-5">
-                    <h3 class="text-base font-medium text-gray-800 dark:text-white/90">
-                        Example List
-                    </h3>
-                </div>
-                <div class="my-auto flex gap-3 px-5">
-                    @canAccess('example.manage.create')
-                    <div>
-                        <a
-                            class="btn primary"
-                            :href="$withBack('{{ backend_route('example.form') }}')"
-                            wire:navigate
-                        >
-                            <span class="fa-solid fa-plus"></span>
-                            Add
-                        </a>
-                    </div>
-                    @endcanAccess
-                    <div class="input-group">
+        <x-synapse-panel :title="__('example::labels.example_list')">
+            <x-slot:toolbar>
+                @canAccess('example.manage.create')
+                <a
+                    class="btn primary"
+                    :href="$withBack('{{ backend_route('example.form') }}')"
+                    wire:navigate
+                >
+                    <span class="ph ph-plus"></span>
+                    {{ __('example::labels.add') }}
+                </a>
+                @endcanAccess
+                <x-synapse-search-box
+                    :placeholder="__('example::labels.search_placeholder')"
+                    wire:model.live.debounce="q"
+                >
+                    <x-slot:trailing>
                         <button
-                            class="input-group-item right btn"
+                            class="btn"
                             type="button"
-                            title="Advanced Filter"
+                            title="{{ __('example::labels.advanced_filter') }}"
                             @click="drawerOpen = true"
-                        ><span class="fa-solid fa-filter"></span></button>
-                        <input
-                            class="form-input p-2"
-                            id="q"
-                            name="q"
-                            type="text"
-                            placeholder="Search"
-                            wire:model.live.debounce="q"
-                        >
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-100 dark:border-gray-800">
+                        ><span class="ph ph-funnel"></span></button>
+                    </x-slot:trailing>
+                </x-synapse-search-box>
+            </x-slot:toolbar>
+
+            <div class="syn-panel-body">
                 <div class="max-w-full overflow-x-auto">
-                    <table
-                        class="datatable min-w-full"
-                        id="dataTable"
-                        width="100%"
-                        cellspacing="0"
-                    >
+                    <table class="datatable min-w-full">
                         <thead>
                             <tr>
-                                <th>
-                                    <p>No.</p>
+                                <th><p>{{ __('example::labels.no') }}</p></th>
+                                <th class="sortable">
+                                    <div>
+                                        <p>Text</p>
+                                        <x-synapse-sort-icon
+                                            field="text"
+                                            :sort-field="$sortField"
+                                            :sort-direction="$sortDirection"
+                                        />
+                                    </div>
                                 </th>
-                                <th>
-                                    <p>Text</p>
+                                <th><p>{{ __('example::labels.category') }}</p></th>
+                                <th class="sortable">
+                                    <div>
+                                        <p>{{ __('example::labels.status') }}</p>
+                                        <x-synapse-sort-icon
+                                            field="status"
+                                            :sort-field="$sortField"
+                                            :sort-direction="$sortDirection"
+                                        />
+                                    </div>
                                 </th>
-                                <th>
-                                    <p>Category</p>
-                                </th>
-                                <th>
-                                    <p>Email</p>
-                                </th>
-                                <th>
-                                    <p>Number</p>
-                                </th>
-                                <th>
-                                    <p>Textarea</p>
-                                </th>
+                                <th><p>Email</p></th>
+                                <th><p>Number</p></th>
+                                <th><p>Textarea</p></th>
                                 <th class="sortable">
                                     <div>
                                         <p>Options</p>
-                                        <a
-                                            href="#"
-                                            wire:click.prevent="sortData('dropdown')"
-                                        >
-                                            <span
-                                                class="fa fa-solid {{ $sort != 'dropdown' ? 'fa-sort' : ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') }}"
-                                            ></span>
-                                        </a>
+                                        <x-synapse-sort-icon
+                                            field="dropdown"
+                                            :sort-field="$sortField"
+                                            :sort-direction="$sortDirection"
+                                        />
                                     </div>
                                 </th>
                                 <th class="sortable">
                                     <div>
                                         <p>Date Time</p>
-                                        <a
-                                            href="#"
-                                            wire:click.prevent="sortData('datetime')"
-                                        >
-                                            <span
-                                                class="fa fa-solid {{ $sort != 'datetime' ? 'fa-sort' : ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') }}"
-                                            ></span>
-                                        </a>
+                                        <x-synapse-sort-icon
+                                            field="datetime"
+                                            :sort-field="$sortField"
+                                            :sort-direction="$sortDirection"
+                                        />
                                     </div>
                                 </th>
-                                <th class="datatable-col-actions">
-                                    <p>Actions</p>
-                                </th>
+                                <th class="datatable-col-actions"><p>{{ __('example::labels.actions') }}</p></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @php
-                                $i = 1;
-                            @endphp
                             @foreach ($this->exampleList as $list)
                                 <tr wire:key="example-{{ $list->id }}">
+                                    <td><p>{{ $this->exampleList->firstItem() + $loop->index }}</p></td>
+                                    <td><p>{{ $list->text }}</p></td>
                                     <td>
-                                        <div class="flex items-center">
-                                            <p>{{ ($this->exampleList->currentPage() - 1) * $limit + $i }}</p>
-                                        </div>
+                                        @if ($list->category)
+                                            <button
+                                                type="button"
+                                                title="Click to filter by this category"
+                                                class="{{ in_array($list->category_id, $filterCategories)
+                                                    ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300'
+                                                    : 'bg-gray-100 text-gray-700 hover:bg-brand-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-brand-900/20' }} inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-0.5 text-sm font-medium transition-colors"
+                                                wire:click="filterByCategory({{ $list->category_id }})"
+                                            >
+                                                <span class="ph ph-folder text-xs"></span>
+                                                <span>{{ $list->category->name }}</span>
+                                            </button>
+                                        @else
+                                            <span class="text-sm italic text-gray-400 dark:text-gray-600">No category</span>
+                                        @endif
                                     </td>
                                     <td>
-                                        <div class="flex items-center">
-                                            <p>{{ $list->text }}</p>
-                                        </div>
+                                        <x-synapse-badge
+                                            :color="$list->status->color()"
+                                            size="sm"
+                                        >{{ $list->status->label() }}</x-synapse-badge>
                                     </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            @if ($list->category)
-                                                <button
-                                                    class="{{ in_array($list->category_id, $filterCategories)
-                                                        ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300'
-                                                        : 'bg-gray-100 text-gray-700 hover:bg-brand-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-brand-900/20' }} inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-0.5 text-sm font-medium transition-colors"
-                                                    type="button"
-                                                    title="Click to filter by this category"
-                                                    wire:click="filterByCategory({{ $list->category_id }})"
-                                                >
-                                                    <span class="fa-solid fa-folder text-xs"></span>
-                                                    <span>{{ $list->category->name }}</span>
-                                                </button>
-                                            @else
-                                                <span class="text-sm italic text-gray-400 dark:text-gray-600">No
-                                                    category</span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <p class="">{{ $list->email }}</p>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <p>{{ $list->number }}
-                                            </p>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <p>{{ $list->textarea }}
-                                            </p>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <p>{{ $list->dropdown + 1 }}
-                                            </p>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <p>{{ $list->datetime }}
-                                            </p>
-                                        </div>
-                                    </td>
+                                    <td><p>{{ $list->email }}</p></td>
+                                    <td><p>{{ $list->number }}</p></td>
+                                    <td><p>{{ Str::limit($list->textarea, 50) }}</p></td>
+                                    <td><p>{{ $list->dropdown + 1 }}</p></td>
+                                    <td><p>{{ $list->datetime }}</p></td>
                                     <td>
                                         <div class="text-center">
                                             @canAccess('example.manage.update')
@@ -179,77 +126,53 @@
                                                 :href="$withBack('{{ backend_route('example.form', ['id' => $list->id]) }}')"
                                                 wire:navigate
                                             >
-                                                <span class="fa-solid fa-edit"></span>
-                                                <span class="tooltip">Edit</span>
+                                                <span class="ph ph-pencil-simple"></span>
+                                                <span class="tooltip">{{ __('example::labels.edit') }}</span>
                                             </a>
                                             @endcanAccess
                                             @canAccess('example.manage.delete')
                                             <button
                                                 class="btn-icon danger has-tooltip group"
+                                                type="button"
                                                 data-title="Delete Example"
-                                                data-message="Are you sure you want to delete &quot;{{ $list->text }}&quot;? This action cannot be undone."
-                                                data-confirm="Yes, Delete"
-                                                data-cancel="Cancel"
+                                                data-message="Are you sure you want to delete &quot;{{ $list->text }}&quot;? It will be moved to the trash."
+                                                data-confirm="{{ __('example::labels.yes_delete') }}"
+                                                data-cancel="{{ __('example::labels.cancel') }}"
                                                 data-token="{{ $list->delete_token }}"
                                                 data-component="{{ $this->getId() }}"
-                                                type="button"
                                                 @click="$dispatch('confirm-dialog', {
                                                     title: $el.dataset.title,
                                                     message: $el.dataset.message,
                                                     confirmText: $el.dataset.confirm,
                                                     cancelText: $el.dataset.cancel,
                                                     confirmColor: 'danger',
-                                                    icon: 'fa-solid fa-trash',
+                                                    icon: 'ph ph-trash',
                                                     wireMethod: 'delete',
                                                     wireParams: [$el.dataset.token],
                                                     wireComponent: $el.dataset.component
                                                 })"
                                             >
-                                                <span class="fa-solid fa-trash"></span>
-                                                <span class="tooltip">Delete</span>
+                                                <span class="ph ph-trash"></span>
+                                                <span class="tooltip">{{ __('example::labels.delete') }}</span>
                                             </button>
                                             @endcanAccess
                                         </div>
                                     </td>
                                 </tr>
-                                @php
-                                    $i++;
-                                @endphp
                             @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="flex gap-2 p-3">
-                <div class="flex-none p-1">
-                    <select
-                        class="shadow-theme-sm rounded-sm p-1"
-                        id="limit"
-                        name="limit"
-                        wire:model.live="limit"
-                    >
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                </div>
-                <div class="pagination-container flex-1 grow">
-                    {{ $this->exampleList->links() }}
-                </div>
-            </div>
-        </div>
+
+            <x-synapse-per-page-selector :paginator="$this->exampleList" />
+        </x-synapse-panel>
     </div>
 
-    @php
-        $advanceTitle = '<span class="fa-solid fa-filter mr-2"></span>Advanced Filter';
-    @endphp
-    <x-synapse-drawer :title="$advanceTitle">
+    <x-synapse-drawer :title="$this->drawerTitle">
         <div class="space-y-6">
             <div>
-                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Dropdown Option
-                </label>
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Dropdown Option</label>
                 <x-synapse-adv-select
                     wire-model="filterOption"
                     :live="true"
@@ -258,9 +181,7 @@
             </div>
 
             <div>
-                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Categories
-                </label>
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('example::labels.category') }}</label>
                 <x-synapse-adv-select
                     wire-model="filterCategories"
                     :live="true"

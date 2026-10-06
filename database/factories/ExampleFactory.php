@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VmEngine\Example\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use VmEngine\Example\Enums\ExampleStatus;
 use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
+use VmEngine\Example\Models\ExampleTag;
 
 /**
  * @extends Factory<Example>
@@ -40,6 +44,40 @@ class ExampleFactory extends Factory
             'datetime' => $this->faker->dateTime(),
             'file' => $this->faker->filePath(),
             'color' => $this->faker->hexColor(),
+            'status' => $this->faker->randomElement(ExampleStatus::cases()),
+            'due_at' => $this->faker->boolean(70) ? $this->faker->dateTimeBetween('-1 month', '+2 months')->format('Y-m-d') : null,
+            'content' => '<p>'.$this->faker->paragraph().'</p>',
+            'meta' => ['source' => $this->faker->word(), 'priority' => $this->faker->numberBetween(1, 5)],
+            'position' => 0,
         ];
+    }
+
+    public function draft(): static
+    {
+        return $this->state(['status' => ExampleStatus::Draft]);
+    }
+
+    public function review(): static
+    {
+        return $this->state(['status' => ExampleStatus::Review]);
+    }
+
+    public function published(): static
+    {
+        return $this->state(['status' => ExampleStatus::Published]);
+    }
+
+    public function dueThisMonth(): static
+    {
+        return $this->state(fn (): array => [
+            'due_at' => $this->faker->dateTimeBetween(now()->startOfMonth(), now()->endOfMonth())->format('Y-m-d'),
+        ]);
+    }
+
+    public function withTags(int $count = 2): static
+    {
+        return $this->afterCreating(function (Example $example) use ($count): void {
+            $example->tags()->attach(ExampleTag::factory()->count($count)->create());
+        });
     }
 }

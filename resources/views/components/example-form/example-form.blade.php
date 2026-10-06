@@ -45,7 +45,7 @@
                         <label for="email">{{ __('example::labels.forms.email') }}</label>
                         <div class="input-group">
                             <span class="input-group-item left">
-                                <span class="fa-solid fa-envelope"></span>
+                                <span class="ph ph-envelope"></span>
                             </span>
                             <input
                                 class="form-input pl-[62px]! @error('form.email') has-error @enderror"
@@ -186,7 +186,7 @@
                                 type="text"
                             >
                             <span class="error-icon">
-                                <span class="fa-solid fa-circle-exclamation"></span>
+                                <span class="ph ph-warning-circle"></span>
                             </span>
                         </div>
                         <p class="form-error-message">
@@ -258,6 +258,6 @@
                     $wire.form.masked = $wire.form.masked.replace(/\./g, '');
                     $wire.save();
                 }"
-        ><span class="fa-solid fa-floppy-disk"></span> Save</button>
+        ><span class="ph ph-floppy-disk"></span> Save</button>
     </div>
 </div>
