@@ -1,21 +1,8 @@
-<div
-    x-data="{
-        autoSlug: true,
-        generateSlug(name) {
-            if (this.autoSlug) {
-                return name.toLowerCase()
-                    .replace(/[^\w\s-]/g, '')
-                    .replace(/\s+/g, '-')
-                    .replace(/--+/g, '-')
-                    .trim();
-            }
-        }
-    }"
->
+<div x-data="exampleCategoryForm()">
     <!-- Modal Header -->
     <div class="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            @if($form->category)
+            @if ($form->category)
                 {{ __('example::labels.edit_category') }}
             @else
                 {{ __('example::labels.add_category') }}
@@ -54,7 +41,7 @@
                     name="name"
                     type="text"
                     wire:model="form.name"
-                    @input="if (autoSlug) { $wire.form.slug = generateSlug($event.target.value); }"
+                    @input="handleNameInput($event.target.value)"
                     placeholder="{{ __('example::labels.enter_name', ['name' => 'category']) }}"
                 >
             </div>
@@ -82,7 +69,9 @@
                     x-show="autoSlug"
                     x-transition
                 >
-                    <span class="rounded bg-brand-100 px-2 py-1 text-xs font-medium text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">
+                    <span
+                        class="rounded bg-brand-100 px-2 py-1 text-xs font-medium text-brand-700 dark:bg-brand-900/30 dark:text-brand-300"
+                    >
                         {{ __('example::labels.auto') }}
                     </span>
                 </span>
@@ -137,7 +126,7 @@
             type="button"
             @click="$dispatch('close-modal-category-form')"
         >
-            <span class="fa-solid fa-times mr-1"></span>
+            <span class="ph ph-x mr-1"></span>
             {{ __('example::labels.cancel') }}
         </button>
         <button
@@ -145,8 +134,36 @@
             type="button"
             wire:click="save"
         >
-            <span class="fa-solid fa-save mr-1"></span>
+            <span class="ph ph-floppy-disk mr-1"></span>
             {{ __('example::labels.save') }}
         </button>
     </div>
 </div>
+
+<script nonce="{{ csp_nonce() }}">
+    (() => {
+        const register = () => {
+        Alpine.data('exampleCategoryForm', () => ({
+            autoSlug: true,
+            generateSlug(name) {
+                if (this.autoSlug) {
+                    return name.toLowerCase()
+                        .replace(/[^\w\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/--+/g, '-')
+                        .trim();
+                }
+            },
+            handleNameInput(value) {
+                if (this.autoSlug) {
+                    this.$wire.form.slug = this.generateSlug(value);
+                }
+            }
+        }));
+        };
+    document.addEventListener('alpine:init', register);
+    if (window.Alpine) {
+        register();
+    }
+    })();
+</script>

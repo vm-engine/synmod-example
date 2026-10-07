@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VmEngine\Example\Livewire\Forms;
 
 use Livewire\Form;
@@ -27,7 +29,8 @@ class CategoryFormObject extends Form
         $this->is_active = $category->is_active;
     }
 
-    public function rules()
+    /** @return array<string, mixed> */
+    public function rules(): array
     {
         $categoryId = $this->category?->id;
 

@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VmEngine\Example\Livewire\Forms;
 
 use Illuminate\Validation\Rules\File;
 use Illuminate\Validation\Rules\Password;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\Form;
 use Livewire\WithFileUploads;
 use VmEngine\Example\Models\Example;
@@ -30,17 +33,19 @@ class ExampleFormObject extends Form
 
     public string $dropdown = '0';
 
+    /** @var array<int, int|string> */
     public array $multidropdown = [];
 
     public string $radio = '0';
 
+    /** @var array<int, int|string> */
     public array $checkbox = [];
 
     public string $date = '';
 
     public string $datetime = '';
 
-    public $file;
+    public ?TemporaryUploadedFile $file = null;
 
     public string $color = '';
 
@@ -64,7 +69,8 @@ class ExampleFormObject extends Form
         $this->color = $example->color;
     }
 
-    public function rules()
+    /** @return array<string, mixed> */
+    public function rules(): array
     {
         return [
             'text' => 'required',

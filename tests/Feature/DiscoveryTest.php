@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use VmEngine\Example\Models\Example;
 
 describe('Example Module Discovery', function () {

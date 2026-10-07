@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use VmEngine\Example\Enums\ExampleStatus;
 use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
 use VmEngine\SynAuth\Models\Role;
@@ -15,11 +18,7 @@ beforeEach(function () {
     $permission = RolePermission::factory()
         ->forModule('example', 'manage')
         ->fullCrud();
-    $this->adminRole = Role::factory()->has($permission)->create([
-        'name' => 'Administrator',
-        'slug' => 'admin',
-        'level' => 5,
-    ]);
+    $this->adminRole = Role::factory()->admin()->has($permission)->create();
     $this->user = User::factory()->create();
     $this->user->roles()->attach($this->adminRole);
 });
@@ -204,7 +203,7 @@ describe('Delete Example', function () {
             ->call('delete', $example->delete_token)
             ->assertDispatched('notify');
 
-        $this->assertDatabaseMissing('examples', [
+        $this->assertSoftDeleted('examples', [
             'id' => $example->id,
         ]);
     });
@@ -329,11 +328,37 @@ describe('List Filtering', function () {
     it('can sort data ascending and descending', function () {
         Livewire::actingAs($this->user)
             ->test('example::example-list')
-            ->call('sortData', 'text')
-            ->assertSet('sort', 'text')
+            ->call('sortBy', 'text')
+            ->assertSet('sortField', 'text')
             ->assertSet('sortDirection', 'asc')
-            ->call('sortData', 'text')
+            ->call('sortBy', 'text')
             ->assertSet('sortDirection', 'desc');
+    });
+
+    it('ignores a sort field that is not whitelisted', function () {
+        $component = Livewire::actingAs($this->user)
+            ->test('example::example-list')
+            ->set('sortField', 'protected');
+
+        expect($component->get('exampleList')->count())->toBe(3);
+    });
+
+    it('paginates with the per-page selector', function () {
+        Example::factory()->count(20)->create();
+
+        $component = Livewire::actingAs($this->user)
+            ->test('example::example-list')
+            ->set('perPage', 10);
+
+        expect($component->get('exampleList')->perPage())->toBe(10);
+    });
+
+    it('shows the status badge', function () {
+        Example::factory()->review()->create(['text' => 'Needs review']);
+
+        Livewire::actingAs($this->user)
+            ->test('example::example-list')
+            ->assertSee(ExampleStatus::Review->label());
     });
 
     it('resets page when filters are updated', function () {

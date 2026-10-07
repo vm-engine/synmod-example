@@ -1,138 +1,92 @@
 <div x-data="{ pageName: 'Category List', isHome: false, drawerOpen: false }">
     @include('synapps::components.layouts.partials.breadcrumbs', ['breadcrumbs' => $this->breadcrumbs])
 
-    <!-- Confirmation Dialog -->
     <x-synapse-confirm-dialog />
 
-    <!-- Category List -->
     <div class="space-y-5 sm:space-y-6">
-
-        <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-
-            <div class="flex justify-between">
-                <div class="px-5 py-4 sm:px-6 sm:py-5">
-                    <h3 class="text-base font-medium text-gray-800 dark:text-white/90">
-                        {{ __('example::labels.category_list') }}
-                    </h3>
-                </div>
-                <div class="my-auto flex gap-3 px-5">
-                    @canAccess('example.category.create')
-                    <div>
+        <x-synapse-panel :title="__('example::labels.category_list')">
+            <x-slot:toolbar>
+                @canAccess('example.category.create')
+                <button
+                    class="btn primary"
+                    type="button"
+                    @click="$dispatch('open-modal-category-form')"
+                    wire:click="$dispatch('reset-category-form')"
+                >
+                    <span class="ph ph-plus"></span>
+                    {{ __('example::labels.add') }}
+                </button>
+                @endcanAccess
+                <x-synapse-search-box
+                    :placeholder="__('example::labels.search_placeholder')"
+                    wire:model.live.debounce="q"
+                >
+                    <x-slot:trailing>
                         <button
-                            class="btn primary"
-                            type="button"
-                            @click="$dispatch('open-modal-category-form'); $wire.dispatch('reset-category-form')"
-                        >
-                            <span class="fa-solid fa-plus"></span>
-                            {{ __('example::labels.add') }}
-                        </button>
-                    </div>
-                    @endcanAccess
-                    <div class="input-group">
-                        <button
-                            class="input-group-item right btn"
+                            class="btn"
                             type="button"
                             title="{{ __('example::labels.advanced_filter') }}"
                             @click="drawerOpen = true"
-                        ><span class="fa-solid fa-filter"></span></button>
-                        <input
-                            class="form-input p-2"
-                            id="q"
-                            name="q"
-                            type="text"
-                            placeholder="{{ __('example::labels.search_placeholder') }}"
-                            wire:model.live.debounce="q"
-                        >
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-100 dark:border-gray-800">
+                        ><span class="ph ph-funnel"></span></button>
+                    </x-slot:trailing>
+                </x-synapse-search-box>
+            </x-slot:toolbar>
+
+            <div class="syn-panel-body">
                 <div class="max-w-full overflow-x-auto">
-                    <table
-                        class="datatable min-w-full"
-                        id="dataTable"
-                        width="100%"
-                        cellspacing="0"
-                    >
+                    <table class="datatable min-w-full">
                         <thead>
                             <tr>
-                                <th>
-                                    <p>{{ __('example::labels.no') }}</p>
-                                </th>
+                                <th><p>{{ __('example::labels.no') }}</p></th>
                                 <th class="sortable">
                                     <div>
                                         <p>{{ __('example::labels.name') }}</p>
-                                        <a
-                                            href="#"
-                                            wire:click.prevent="sortData('name')"
-                                        >
-                                            <span
-                                                class="fa fa-solid {{ $sort != 'name' ? 'fa-sort' : ($sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down') }}"
-                                            ></span>
-                                        </a>
+                                        <x-synapse-sort-icon
+                                            field="name"
+                                            :sort-field="$sortField"
+                                            :sort-direction="$sortDirection"
+                                        />
                                     </div>
                                 </th>
-                                <th>
-                                    <p>{{ __('example::labels.slug') }}</p>
+                                <th><p>{{ __('example::labels.slug') }}</p></th>
+                                <th><p>{{ __('example::labels.description') }}</p></th>
+                                <th class="sortable">
+                                    <div>
+                                        <p>{{ __('example::labels.status') }}</p>
+                                        <x-synapse-sort-icon
+                                            field="is_active"
+                                            :sort-field="$sortField"
+                                            :sort-direction="$sortDirection"
+                                        />
+                                    </div>
                                 </th>
-                                <th>
-                                    <p>{{ __('example::labels.description') }}</p>
-                                </th>
-                                <th>
-                                    <p>{{ __('example::labels.status') }}</p>
-                                </th>
-                                <th>
-                                    <p>{{ __('example::labels.actions') }}</p>
-                                </th>
+                                <th class="datatable-col-actions"><p>{{ __('example::labels.actions') }}</p></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @php
-                                $i = 1;
-                            @endphp
                             @foreach ($this->categoryList as $category)
                                 <tr wire:key="category-{{ $category->id }}">
+                                    <td><p>{{ $this->categoryList->firstItem() + $loop->index }}</p></td>
+                                    <td><p class="font-medium">{{ $category->name }}</p></td>
+                                    <td><p class="text-gray-600 dark:text-gray-400">{{ $category->slug }}</p></td>
+                                    <td><p class="text-sm text-gray-600 dark:text-gray-400">{{ Str::limit($category->description, 50) }}</p></td>
                                     <td>
-                                        <div class="flex items-center">
-                                            <p>{{ ($this->categoryList->currentPage() - 1) * $limit + $i }}</p>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <p class="font-medium">{{ $category->name }}</p>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <p class="text-gray-600 dark:text-gray-400">{{ $category->slug }}</p>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <p class="text-sm text-gray-600 dark:text-gray-400">
-                                                {{ Str::limit($category->description, 50) }}
-                                            </p>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center">
-                                            @canAccess('example.category.update')
-                                            <x-synapse-toggler
-                                                wire:key="toggler-{{ $category->id }}"
-                                                title="Toggle Status"
-                                                :inline="true"
-                                                :checked="$category->is_active"
-                                                @change="active = !active; $wire.toggleActive({{ $category->id }})"
-                                                activeColor="green"
-                                            />
-                                        @else
-                                            @if ($category->is_active)
-                                                <span class="text-success">Active</span>
-                                            @else
-                                                <span class="text-danger">Inactive</span>
-                                            @endif
-                                            @endcanAccess
-                                        </div>
+                                        @canAccess('example.category.update')
+                                        <x-synapse-toggler
+                                            wire:key="toggler-{{ $category->id }}"
+                                            title="Toggle Status"
+                                            :inline="true"
+                                            :checked="$category->is_active"
+                                            @change="active = !active"
+                                            wire:change="toggleActive({{ $category->id }})"
+                                            activeColor="green"
+                                        />
+                                    @else
+                                        <x-synapse-badge
+                                            :color="$category->is_active ? 'success' : 'gray'"
+                                            size="sm"
+                                        >{{ $category->is_active ? __('example::labels.active') : __('example::labels.inactive') }}</x-synapse-badge>
+                                        @endcanAccess
                                     </td>
                                     <td>
                                         <div class="text-center">
@@ -140,9 +94,10 @@
                                             <button
                                                 class="btn-icon warning has-tooltip group"
                                                 type="button"
-                                                @click="$dispatch('open-modal-category-form'); $wire.dispatch('load-category', { id: {{ $category->id }} })"
+                                                @click="$dispatch('open-modal-category-form')"
+                                                wire:click="$dispatch('load-category', { id: {{ $category->id }} })"
                                             >
-                                                <span class="fa-solid fa-edit"></span>
+                                                <span class="ph ph-pencil-simple"></span>
                                                 <span class="tooltip">{{ __('example::labels.edit') }}</span>
                                             </button>
                                             @endcanAccess
@@ -162,67 +117,40 @@
                                                     confirmText: $el.dataset.confirm,
                                                     cancelText: $el.dataset.cancel,
                                                     confirmColor: 'danger',
-                                                    icon: 'fa-solid fa-trash',
+                                                    icon: 'ph ph-trash',
                                                     wireMethod: 'delete',
                                                     wireParams: [$el.dataset.token],
                                                     wireComponent: $el.dataset.component
                                                 })"
                                             >
-                                                <span class="fa-solid fa-trash"></span>
+                                                <span class="ph ph-trash"></span>
                                                 <span class="tooltip">{{ __('example::labels.delete') }}</span>
                                             </button>
                                             @endcanAccess
                                         </div>
                                     </td>
                                 </tr>
-                                @php
-                                    $i++;
-                                @endphp
                             @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="flex gap-2 p-3">
-                <div class="flex-none p-1">
-                    <select
-                        class="shadow-theme-sm rounded-sm p-1"
-                        id="limit"
-                        name="limit"
-                        wire:model.live="limit"
-                    >
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                </div>
-                <div class="pagination-container flex-1 grow">
-                    {{ $this->categoryList->links() }}
-                </div>
-            </div>
-        </div>
+
+            <x-synapse-per-page-selector :paginator="$this->categoryList" />
+        </x-synapse-panel>
     </div>
 
-    @php
-        $advanceTitle = '<span class="fa-solid fa-filter mr-2"></span>' . __('example::labels.advanced_filter');
-    @endphp
-    <x-synapse-drawer :title="$advanceTitle">
+    <x-synapse-drawer :title="$this->drawerTitle">
         <div class="mb-6">
-            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {{ __('example::labels.status_filter') }}
-            </label>
-            <x-synapse-select
-                id="filterStatus"
-                name="filterStatus"
-                wire:model.live="filterStatus"
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('example::labels.status_filter') }}</label>
+            <x-synapse-adv-select
+                wire-model="filterStatus"
+                :live="true"
                 :options="$this->statusOptions"
-            >
-            </x-synapse-select>
+            />
         </div>
     </x-synapse-drawer>
 
-    <!-- Category Form Modal -->
     <x-synapse-modal
         name="category-form"
         maxWidth="2xl"

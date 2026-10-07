@@ -1,0 +1,143 @@
+{
+    "info": {
+        "name": "Synapse Example Module — API v1",
+        "description": "Token-authenticated example endpoints. 1) Set base_url, client_token, credential, password. 2) Run \"Login\" (stores access_token). 3) For the signed create, paste the token's signing secret into signing_secret (API Users > token > Signing secret).",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        { "key": "base_url", "value": "http://localhost:8000" },
+        { "key": "client_token", "value": "" },
+        { "key": "credential", "value": "" },
+        { "key": "password", "value": "" },
+        { "key": "access_token", "value": "" },
+        { "key": "signing_secret", "value": "" },
+        { "key": "example_id", "value": "1" }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{access_token}}", "type": "string" }]
+    },
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "const body = pm.response.json();",
+                                    "if (body.data && body.data.access_token) {",
+                                    "    pm.collectionVariables.set('access_token', body.data.access_token);",
+                                    "}",
+                                    "pm.test('logged in', () => pm.expect(body.data.access_token).to.be.a('string'));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": { "type": "noauth" },
+                        "method": "POST",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Content-Type", "value": "application/json" },
+                            { "key": "X-App-Token", "value": "{{client_token}}" }
+                        ],
+                        "body": { "mode": "raw", "raw": "{\n    \"credential\": \"{{credential}}\",\n    \"password\": \"{{password}}\",\n    \"device_name\": \"Postman\"\n}" },
+                        "url": { "raw": "{{base_url}}/api/auth/login", "host": ["{{base_url}}"], "path": ["api", "auth", "login"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Examples",
+            "item": [
+                {
+                    "name": "List examples",
+                    "request": {
+                        "method": "GET",
+                        "header": [{ "key": "Accept", "value": "application/json" }],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/example/examples?status=&category_id=&q=&per_page=15",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "v1", "example", "examples"],
+                            "query": [
+                                { "key": "status", "value": "", "description": "draft | review | published" },
+                                { "key": "category_id", "value": "" },
+                                { "key": "q", "value": "" },
+                                { "key": "per_page", "value": "15", "description": "1-50" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Show example",
+                    "request": {
+                        "method": "GET",
+                        "header": [{ "key": "Accept", "value": "application/json" }],
+                        "url": { "raw": "{{base_url}}/api/v1/example/examples/{{example_id}}", "host": ["{{base_url}}"], "path": ["api", "v1", "example", "examples", "{{example_id}}"] }
+                    }
+                },
+                {
+                    "name": "Update status",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "body": { "mode": "raw", "raw": "{\n    \"status\": \"published\",\n    \"publish_note\": \"Published from Postman\"\n}" },
+                        "url": { "raw": "{{base_url}}/api/v1/example/examples/{{example_id}}/status", "host": ["{{base_url}}"], "path": ["api", "v1", "example", "examples", "{{example_id}}", "status"] }
+                    }
+                },
+                {
+                    "name": "Create example (signed)",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "// HMAC-SHA256 over METHOD\\nPATH\\nTIMESTAMP\\nsha256_hex(body), base64-encoded.",
+                                    "const secret = pm.collectionVariables.get('signing_secret');",
+                                    "const timestamp = new Date().toISOString().replace(/\\.\\d{3}Z$/, 'Z');",
+                                    "const body = pm.variables.replaceIn(pm.request.body ? pm.request.body.raw : '');",
+                                    "const path = '/' + pm.request.url.path.join('/');",
+                                    "const stringToSign = [pm.request.method.toUpperCase(), path, timestamp, CryptoJS.SHA256(body).toString(CryptoJS.enc.Hex)].join('\\n');",
+                                    "const signature = CryptoJS.HmacSHA256(stringToSign, secret).toString(CryptoJS.enc.Base64);",
+                                    "pm.request.headers.upsert({ key: 'X-Timestamp', value: timestamp });",
+                                    "pm.request.headers.upsert({ key: 'X-Signature', value: signature });"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "body": { "mode": "raw", "raw": "{\n    \"text\": \"Created from Postman\",\n    \"email\": \"postman@example.com\",\n    \"status\": \"draft\"\n}" },
+                        "url": { "raw": "{{base_url}}/api/v1/example/examples", "host": ["{{base_url}}"], "path": ["api", "v1", "example", "examples"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Categories",
+            "item": [
+                {
+                    "name": "List categories",
+                    "request": {
+                        "method": "GET",
+                        "header": [{ "key": "Accept", "value": "application/json" }],
+                        "url": { "raw": "{{base_url}}/api/v1/example/categories", "host": ["{{base_url}}"], "path": ["api", "v1", "example", "categories"] }
+                    }
+                }
+            ]
+        }
+    ]
+}

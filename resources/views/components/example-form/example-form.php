@@ -70,7 +70,7 @@ new class extends Component
     #[Computed()]
     public function options(): array
     {
-        return range(1, 9);
+        return array_map(fn ($n) => ['value' => $n, 'label' => (string) $n], range(1, 9));
     }
 
     #[Computed()]
@@ -79,10 +79,10 @@ new class extends Component
         return Breadcrumbs::make(
             'Example List',
             backend_route('example.index'),
-            'fa-solid fa-list',
+            'ph ph-table',
         )->add(
             label: 'Form',
-            icon: 'fa-solid fa-pen',
+            icon: 'ph ph-pencil-simple',
         );
     }
 

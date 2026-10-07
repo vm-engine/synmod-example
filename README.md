@@ -1,18 +1,22 @@
 # Example Module
 
-A reference implementation demonstrating Laravel Synapse modular architecture patterns.
+A reference implementation of Laravel Synapse modular architecture patterns — and, since 3.0, a **Pattern Catalog** of 57 working examples you can open, copy and adapt.
 
 ## Overview
 
-This module serves as an example and template for building package modules in Laravel Synapse projects. It showcases best practices for:
+Open **Example → Pattern Catalog** (`/apps/example/catalog`) in the backend. Every card links to a live page and lists the source files behind it, grouped as:
 
-- Modular architecture with proper namespace organization
-- Livewire v4 MFC/SFC (Multi-File and Single-File Component) patterns
-- ACL (Access Control List) implementation with hierarchical permissions
-- Backend navigation with multi-level menus
-- Model factories and seeders
-- Testing with Pest
-- Session-based filter/sort state persistence
+- **Lists** — table, card grid, bulk actions, trash & restore, drag-sortable rows, tree, grouped, expandable, load more, inline edit, inline filters, Excel export.
+- **Forms** — full editor with sticky action bar and error summary, modal/drawer/tabbed forms, modal and page wizards, repeater, uploads, rich text, remote/creatable select, conditional fields, real-time validation, slug, JSON, color picker.
+- **Pages** — dashboard (ApexCharts), tabbed settings (DbConfig), report + print view, kanban, calendar, split pane, empty states, live progress, detail page with tabs.
+- **Components** — a gallery of the synapse UI components.
+- **Integrations** — auth directives + helpers, activity log, OTP-protected action, conditional (ABAC) permission, guarded actions, user field extension, remembered filters, API v1 + HMAC signing (Postman collection in `docs/postman/`), notifications, global search, queued Excel import, public frontend pages.
+
+## Requirements
+
+- PHP 8.2+, Laravel 11–13, Livewire 4
+- `vm-engine/synapse` ^3.3 and `vm-engine/synapps-auth` ^3.1
+- `mews/purifier` ^3.4; npm `jodit` and `apexcharts` (added to the host `package.json` by `synapps:discover`)
 
 ## Installation
 
@@ -37,73 +41,60 @@ Add the repository to your project's `composer.json`:
 composer require vm-engine/synmod-example
 ```
 
-### 3. Discover Modules and Cache Configuration
+### 3. Discover Modules and Compile Configuration
 
 ```bash
 php artisan synapps:discover
-php artisan config:cache
+php artisan synapps:config
 ```
 
-### 4. Run Migrations
+### 4. Run Migrations and Setup
 
 ```bash
 php artisan migrate
+php artisan example:setup     # adds the module JS import, creates the Example author demo role, indexes examples for global search
 ```
+
+Optional demo data: the module's seeders (categories, tags, 60 examples, a node tree, the Example author role).
 
 ### 5. Build Assets
 
 ```bash
+npm install
 npm run build
 ```
 
-## Features
+### Optional platform features
 
-- **Example Management**: CRUD operations for example records with correct browser page titles
-- **Category Management**: Organize examples by categories
-- **Advanced Filtering**: Search, filter by dropdown options and categories with session-based state persistence
-- **File Uploads**: Handle document uploads (PDF, DOC, XLS, PPT)
-- **Form Validation**: Comprehensive validation including password rules
-- **ACL Integration**: Fine-grained permission controls
+- **Global search** (Ctrl/⌘+K): `php artisan synapps:searchable-setup`, then `php artisan example:search-reindex`.
+- **Notifications** (bell + toast): `php artisan synotif:setup`.
+- **Queued export/import**: run a queue worker (`php artisan queue:work`).
+- **API**: create an API user and token under Auth → API Users; generate a signing secret for the signed `POST /examples`.
 
 ## Module Structure
 
 ```
 packages/synmod-example/
 ├── src/
-│   ├── ExampleServiceProvider.php          # Auto-registers components via AutoRegistersComponents
-│   └── Models/
-│       ├── Example.php
-│       └── ExampleCategory.php
-├── resources/views/components/             # MFC Livewire components (Livewire v4)
-│   ├── ⚡example-list/
-│   │   ├── example-list.php
-│   │   └── example-list.blade.php
-│   ├── ⚡example-form/
-│   │   ├── example-form.php
-│   │   └── example-form.blade.php
-│   ├── ⚡category-list/
-│   │   ├── category-list.php
-│   │   └── category-list.blade.php
-│   ├── ⚡category-form/
-│   │   ├── category-form.php
-│   │   └── category-form.blade.php
-│   └── ⚡example-page/
-│       ├── example-page.php
-│       └── example-page.blade.php
-├── database/
-│   ├── migrations/
-│   ├── factories/
-│   └── seeders/
+│   ├── Catalog/PatternCatalog.php          # registry behind the Pattern Catalog page
+│   ├── Console/                            # example:setup, example:search-reindex
+│   ├── Exports/ Imports/                   # Excel export query, import processor
+│   ├── Http/                               # API v1 controller, resources, requests
+│   ├── Livewire/ (Concerns, Forms)         # shared traits and form objects
+│   ├── Models/ Observers/ Notifications/ Listeners/
+│   ├── Support/                            # settings, stats, activity, search index, notifier…
+│   └── View/Components/                    # <x-example::chart>, <x-example::rich-text>
+├── resources/views/components/             # MFC Livewire components, one folder per page
+│   ├── lists/ forms/ pages/ integrations/ frontend/
+│   └── example-list/ example-editor/ …
 ├── routes/
-│   ├── web.backend.php
-│   └── web.php
-├── lang/en/
-├── tests/
-├── module.json
-└── composer.json
+│   ├── web.backend.php                     # /apps/example/*
+│   ├── web.php                             # public /example/*
+│   └── api.v1.php                          # /api/v1/example/*
+├── database/ (migrations, factories, seeders)
+├── docs/postman/                           # API v1 Postman collection
+├── lang/en/ tests/ module.json composer.json
 ```
-
-> **Note:** This module uses the MFC (Multi-File Component) format introduced in Synapse v2.0. Components live in `resources/views/components/` rather than `src/Livewire/`.
 
 ## Namespace Structure
 
@@ -115,22 +106,31 @@ This module uses the **VmEngine vendor namespace**:
 
 ## Permissions
 
-The module defines the following permissions in `module.json`:
+Defined in `module.json` (assign them to roles under Auth → Roles):
 
-### Example Management (`example.manage`)
-- Create, Read, Update, Delete
-- Sub-feature: `example.manage.subfeature` (nested permissions)
+| Permission | Actions | Covers |
+|---|---|---|
+| `example.manage` | create, read, update, delete | examples and most pattern pages |
+| `example.category` | create, read, update, delete | categories |
+| `example.tag` | create, read, update, delete | tags |
+| `example.node` | create, read, update, delete | node tree and node browser |
+| `example.settings` | read, update | module settings |
 
-### Category Management (`example.category`)
-- Create, Read, Update, Delete
+The **Example author** role (from `example:setup`) demonstrates an ABAC condition: update/delete only on examples the user created.
 
 ## Routes
 
-All backend routes are automatically prefixed with `/admin/example/` and require authentication:
+- Backend: `/apps/example/…` (authenticated, per-route `can-access` permissions) — start at `/apps/example/catalog`.
+- Frontend: `/example`, `/example/search`, `/example/{slug}` (public, published examples only).
+- API: `/api/v1/example/examples`, `/examples/{id}`, `/examples/{id}/status`, `/categories`, signed `POST /examples` — see the API page in the catalog.
 
-- `GET /admin/example/` - Example list
-- `GET /admin/example/form/{id?}` - Create/edit form
-- `GET /admin/example/category` - Category management
+## Upgrading from 2.x
+
+- Requires synapse ^3.3 and synapps-auth ^3.1 (and their own upgrade steps: copy resources, rebuild assets).
+- Run the new migrations — they add showcase columns to `examples`, new tag/node/attachment tables, and a nullable `example_default_category_id` on `users`.
+- Run `php artisan example:setup` and rebuild assets.
+- Assign the new `example.tag`, `example.node` and `example.settings` permissions to your roles.
+- Deleting an example is now a soft delete (Trash page); old `<x-synapse-select>` usages were replaced by `<x-synapse-adv-select>`.
 
 ## Development
 
@@ -142,7 +142,7 @@ From the parent Laravel project root:
 
 ```bash
 # Run this module's tests (use packages path for local development)
-php vendor/bin/pest packages/synmod-example/tests
+php vendor/bin/pest packages/synmod-example/tests --parallel
 
 # Run specific test
 php vendor/bin/pest --filter="can create an example"

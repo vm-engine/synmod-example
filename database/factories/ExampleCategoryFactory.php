@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VmEngine\Example\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -7,7 +9,7 @@ use Illuminate\Support\Str;
 use VmEngine\Example\Models\ExampleCategory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\VmEngine\Example\Models\ExampleCategory>
+ * @extends Factory<ExampleCategory>
  */
 class ExampleCategoryFactory extends Factory
 {
@@ -20,7 +22,7 @@ class ExampleCategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $name = $this->faker->unique()->words(rand(1, 3), true);
+        $name = implode(' ', array_map(fn (): string => $this->faker->unique()->word(), range(1, rand(1, 3))));
 
         return [
             'name' => ucfirst($name),

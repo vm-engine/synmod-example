@@ -8,14 +8,17 @@
     },
     "name": "Example Module",
     "description": "Example Module",
-    "version": "2.0.2",
+    "version": "3.0.0",
     "author": "Adods",
     "email": "theadods@gmail.com",
     "git_repo": "https://repo.4visionmedia.com/vm-engine/synmod-example.git",
     "url_prefix": "example",
     "dependencies": {
         "npm": {
-            "main": {},
+            "main": {
+                "jodit": "^4.15",
+                "apexcharts": "^7.8"
+            },
             "dev": {}
         },
         "composer": {
@@ -35,15 +38,23 @@
             "name": "__example::menu.be.parent",
             "position": 1,
             "class": "",
-            "icon": "fa-solid fa-table",
+            "icon": "ph ph-cube",
             "acl": "example.any",
             "sub": {
+                "catalog": {
+                    "id": "catalog",
+                    "name": "__example::menu.be.catalog",
+                    "route": "example.catalog",
+                    "class": "",
+                    "icon": "ph ph-squares-four",
+                    "acl": "example.any"
+                },
                 "index": {
                     "id": "index",
                     "name": "__example::menu.be.index",
                     "route": "example.index",
                     "class": "",
-                    "icon": "fa-solid fa-table",
+                    "icon": "ph ph-table",
                     "acl": "example.manage"
                 },
                 "category": {
@@ -51,8 +62,32 @@
                     "name": "__example::menu.be.category",
                     "route": "example.category",
                     "class": "",
-                    "icon": "fa-solid fa-folder",
+                    "icon": "ph ph-folder",
                     "acl": "example.category"
+                },
+                "tags": {
+                    "id": "tags",
+                    "name": "__example::menu.be.tags",
+                    "route": "example.tags",
+                    "class": "",
+                    "icon": "ph ph-tag",
+                    "acl": "example.tag"
+                },
+                "nodes": {
+                    "id": "nodes",
+                    "name": "__example::menu.be.nodes",
+                    "route": "example.nodes",
+                    "class": "",
+                    "icon": "ph ph-tree-structure",
+                    "acl": "example.node"
+                },
+                "settings": {
+                    "id": "settings",
+                    "name": "__example::menu.be.settings",
+                    "route": "example.settings",
+                    "class": "",
+                    "icon": "ph ph-gear-six",
+                    "acl": "example.settings"
                 }
             }
         }
@@ -80,6 +115,53 @@
             "read": 1,
             "update": 1,
             "delete": 1
+        },
+        "tag": {
+            "label": "__example::acl.tag",
+            "create": 1,
+            "read": 1,
+            "update": 1,
+            "delete": 1
+        },
+        "node": {
+            "label": "__example::acl.node",
+            "create": 1,
+            "read": 1,
+            "update": 1,
+            "delete": 1
+        },
+        "settings": {
+            "label": "__example::acl.settings",
+            "create": 0,
+            "read": 1,
+            "update": 1,
+            "delete": 0
+        }
+    },
+    "searchables": {
+        "create": {
+            "name": "__example::search.create",
+            "description": "__example::search.create_desc",
+            "route": "example.editor",
+            "icon": "ph ph-plus",
+            "acl": "example.manage.create",
+            "keywords": "new add example"
+        },
+        "catalog": {
+            "name": "__example::search.catalog",
+            "description": "__example::search.catalog_desc",
+            "route": "example.catalog",
+            "icon": "ph ph-squares-four",
+            "acl": "example.any",
+            "keywords": "patterns demo"
+        },
+        "activity": {
+            "name": "__example::search.activity",
+            "description": "__example::search.activity_desc",
+            "route": "example.integrations.activity",
+            "icon": "ph ph-clock-counter-clockwise",
+            "acl": "example.manage",
+            "keywords": "log audit history"
         }
     }
 }

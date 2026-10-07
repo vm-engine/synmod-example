@@ -9,25 +9,18 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use VmEngine\Example\Models\ExampleCategory;
 use VmEngine\Synapse\Services\Helper\Breadcrumbs;
+use VmEngine\Synapse\Traits\WithSortablePagination;
 
 new class extends Component
 {
     use WithPagination;
+    use WithSortablePagination;
 
     #[Url()]
     public $q;
 
     #[Url()]
     public $filterStatus = null;
-
-    #[Url()]
-    public int $limit = 10;
-
-    #[Url()]
-    public string $sort = 'id';
-
-    #[Url()]
-    public string $sortDirection = 'asc';
 
     public function mount(): void
     {
@@ -37,6 +30,14 @@ new class extends Component
     public function title(): string
     {
         return __('example::labels.category_list');
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function allowedSortFields(): array
+    {
+        return ['id', 'name', 'is_active'];
     }
 
     public function updated(): void
@@ -49,21 +50,6 @@ new class extends Component
         if ($this->filterStatus === 'all') {
             $this->filterStatus = null;
         }
-    }
-
-    public function sortData(string $sort): void
-    {
-        if ($this->sort === $sort && $this->sortDirection === 'asc') {
-            $this->sortDirection = 'desc';
-        } elseif ($this->sort === $sort && $this->sortDirection === 'desc') {
-            $this->reset('sort', 'sortDirection');
-
-            return;
-        } else {
-            $this->sortDirection = 'asc';
-        }
-
-        $this->sort = $sort;
     }
 
     public function toggleActive(int $id): void
@@ -95,6 +81,9 @@ new class extends Component
 
     public function delete(string $token): void
     {
+        // Closes x-synapse-confirm-dialog on every path.
+        $this->dispatch('synapse-confirmed');
+
         try {
             $id = ExampleCategory::validateDeleteToken($token);
 
@@ -152,8 +141,8 @@ new class extends Component
         }
 
         return $model
-            ->orderBy($this->sort, $this->sortDirection)
-            ->paginate($this->limit)
+            ->orderBy($this->validatedSortField(), $this->validatedSortDirection())
+            ->paginate($this->perPage)
             ->onEachSide(1);
     }
 
@@ -161,10 +150,16 @@ new class extends Component
     public function statusOptions(): array
     {
         return [
-            'all' => __('example::labels.all'),
-            'active' => __('example::labels.active'),
-            'inactive' => __('example::labels.inactive'),
+            ['value' => 'all', 'label' => __('example::labels.all')],
+            ['value' => 'active', 'label' => __('example::labels.active')],
+            ['value' => 'inactive', 'label' => __('example::labels.inactive')],
         ];
+    }
+
+    #[Computed()]
+    public function drawerTitle(): string
+    {
+        return '<span class="ph ph-funnel mr-2"></span>'.e(__('example::labels.advanced_filter'));
     }
 
     #[Computed()]
@@ -172,10 +167,15 @@ new class extends Component
     {
         return Breadcrumbs::make(
             label: __('example::menu.be.index'),
-            icon: 'fa-solid fa-table',
+            icon: 'ph ph-table',
         )->add(
             label: __('example::labels.category_list'),
-            icon: 'fa-solid fa-list',
+            icon: 'ph ph-folder',
         );
+    }
+
+    public function render()
+    {
+        return $this->view()->title(page_title($this->title()));
     }
 };

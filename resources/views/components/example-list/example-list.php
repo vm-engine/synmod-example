@@ -3,18 +3,22 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
+use VmEngine\Example\Support\ExampleSettings;
 use VmEngine\Synapse\Services\Helper\Breadcrumbs;
+use VmEngine\Synapse\Traits\RemembersQueryParams;
+use VmEngine\Synapse\Traits\WithSortablePagination;
 
 new class extends Component
 {
+    use RemembersQueryParams;
     use WithPagination;
+    use WithSortablePagination;
 
     #[Url()]
     public $q;
@@ -25,23 +29,43 @@ new class extends Component
     #[Url()]
     public $filterCategories = [];
 
-    #[Url()]
-    public int $limit = 10;
-
-    #[Url()]
-    public string $sort = 'id';
-
-    #[Url()]
-    public string $sortDirection = 'asc';
-
     public function mount(): void
     {
         synav()->setActiveMenu('example.index');
+        $this->perPage = ExampleSettings::perPage();
+    }
+
+    public function clearFilters(): void
+    {
+        $this->reset('q', 'filterOption', 'filterCategories');
+        $this->resetPage();
+    }
+
+    #[Computed()]
+    public function hasFilters(): bool
+    {
+        return filled($this->q) || filled($this->filterOption) || $this->filterCategories !== [];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function rememberedParams(): array
+    {
+        return ['q', 'filterOption', 'filterCategories', 'sortField', 'sortDirection'];
     }
 
     public function title(): string
     {
         return __('example::labels.example_list');
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function allowedSortFields(): array
+    {
+        return ['id', 'text', 'status', 'dropdown', 'datetime', 'due_at'];
     }
 
     public function updated($property): void
@@ -65,21 +89,6 @@ new class extends Component
         }
     }
 
-    public function sortData(string $sort): void
-    {
-        if ($this->sort === $sort && $this->sortDirection === 'asc') {
-            $this->sortDirection = 'desc';
-        } elseif ($this->sort === $sort && $this->sortDirection === 'desc') {
-            $this->reset('sort', 'sortDirection');
-
-            return;
-        } else {
-            $this->sortDirection = 'asc';
-        }
-
-        $this->sort = $sort;
-    }
-
     public function filterByCategory(int $categoryId): void
     {
         if (in_array($categoryId, $this->filterCategories)) {
@@ -91,8 +100,14 @@ new class extends Component
         $this->resetPage();
     }
 
+    /**
+     * Soft delete — the model keeps the uploaded file until a force delete.
+     */
     public function delete(string $token): void
     {
+        // Closes x-synapse-confirm-dialog on every path.
+        $this->dispatch('synapse-confirmed');
+
         try {
             $id = Example::validateDeleteToken($token);
 
@@ -100,14 +115,7 @@ new class extends Component
                 throw new Exception(__('example::labels.invalid_delete_token'));
             }
 
-            $example = Example::findOrFail($id);
-            $storage = Storage::disk('public');
-
-            if ($example->file && $storage->exists($example->file)) {
-                $storage->delete($example->file);
-            }
-
-            $example->delete();
+            Example::findOrFail($id)->delete();
         } catch (ModelNotFoundException) {
             $this->dispatch('notify',
                 variant: 'danger',
@@ -160,15 +168,18 @@ new class extends Component
         }
 
         return $model
-            ->orderBy($this->sort, $this->sortDirection)
-            ->paginate($this->limit)
+            ->orderBy($this->validatedSortField(), $this->validatedSortDirection())
+            ->paginate($this->perPage)
             ->onEachSide(1);
     }
 
     #[Computed()]
     public function options(): array
     {
-        return ['all' => '-- All --'] + Example::$options;
+        return array_merge(
+            [['value' => 'all', 'label' => '-- All --']],
+            array_map(fn ($n) => ['value' => $n, 'label' => (string) $n], Example::$options),
+        );
     }
 
     #[Computed()]
@@ -178,11 +189,17 @@ new class extends Component
     }
 
     #[Computed()]
+    public function drawerTitle(): string
+    {
+        return '<span class="ph ph-funnel mr-2"></span>'.e(__('example::labels.advanced_filter'));
+    }
+
+    #[Computed()]
     public function breadcrumbs(): Breadcrumbs
     {
         return Breadcrumbs::make(
-            label: 'Example List',
-            icon: 'fa-solid fa-list',
+            label: __('example::labels.example_list'),
+            icon: 'ph ph-table',
         );
     }
 
