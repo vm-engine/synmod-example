@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Seeders: 8 tags, 60 examples (even status spread, 20 due this month, 1-3 tags each), 30-node three-level tree.
 - **List patterns** (sub-project 2, all reachable from the Pattern Catalog, 18/57 built): card grid with status chips, bulk select + bulk status/delete with "select all matching", trash & restore with delete-forever, drag-sortable rows (`wire:sort`), grouped table, expandable rows, load more / infinite scroll (`wire:intersect`), inline filter row (URL state) and Excel export (sync download + queued export with progress) sharing one serializable `ExampleExportQuery`.
 - **Tags** screen (inline edit with `x-synapse-color-picker`, add row, delete) and **Nodes** screen (tree with drag reorder across parents via `wire:sort` groups, inline add/rename, branch delete); new `example.tag` / `example.node` permissions and menu items.
+- **Form patterns** (sub-project 3, 33/57 built): full **Example editor** (`/example/editor/{id?}`) with a sticky action bar + linked error summary, slug auto-fill, real-time validation, rich text, key/value meta repeater with a raw-JSON toggle, remote + creatable tags select, cover + multi-file attachments, conditional fields and color picker; layout pages for a modal hosting a child form, drawer create/edit, tabbed form with per-tab error counts, modal wizard and page wizard (`x-synapse-steps`, per-step validation).
+- `<x-example::rich-text>`: local Jodit wrapper (lazy `import('jodit')`, `wire:ignore`), HTML purified server-side by `RichTextSanitizer`; `TagResolver` turns typed tag names into tags.
+- `php artisan example:setup` adds the module JS import to the host `resources/js/app.js` (idempotent).
 
 ### Changed
 - **Requires `vm-engine/synapse` ^3.2 and `vm-engine/synapps-auth` ^3.0**, Laravel ^11.0|^12.0|^13.0.
@@ -22,12 +25,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backend menu and form icons switched to Phosphor.
 - `declare(strict_types=1)` on every PHP file.
 - PHPStan level 7 with no ignore list (now covering `database/` too): typed `rules()`, form array properties, `?TemporaryUploadedFile $file`, `newFactory()` returns, `HasFactory` generics, scope builders and relation generics. `/build/` added to `.gitignore`.
+- Requires `mews/purifier` ^3.4; npm `jodit` ^4.15.
+- All date inputs use `<x-synapse-datepicker>` (filter row uses `wire:model.live`); a guard test fails on native `type="date"` inputs.
+- `Example` defaults the NOT NULL legacy columns (`protected`, `number`, `dropdown`) so the new forms can create rows; `ExampleAttachment` uses `WithDeleteToken`.
 
 ### Fixed
 - **CSP-safe Alpine.js compatibility.** `category-form`, `category-list`, and `example-list` migrated off inline `x-data="{ ... }"` object literals with methods and multi-statement `@click`/`x-on:*` expressions to the `Alpine.data()` registry pattern (required by `vm-engine/synapse` ^3.0's new default CSP-safe Alpine build), guarded against the `alpine:init`/`wire:navigate` timing race. `example-list`'s use of the `withBack()` global JS helper switched to the `$withBack()` Alpine magic, since bare globals aren't resolvable inside a CSP-restricted directive expression.
 - `ExampleFactory`'s `@extends Factory<...>` PHPDoc referenced a nonexistent `App\Models\Model` placeholder type instead of the actual `Example` model — flagged by PHPStan level 5.
 - Migrated the remaining `<x-synapse-select>`/`<x-synapse-multiselect>` usages (removed from `vm-engine/synapse` v3.0) to `<x-synapse-adv-select>` in `category-list`, `example-form`, and `example-list` — these views were throwing unknown-component errors. `statusOptions()`/`options()` reshaped to the value/label array format the new component requires.
 - Tag slugs are now unique (`-2`, `-3`…) when two names slugify the same.
+- Real-time fields use `wire:model.live.blur` (Livewire 4.1's `.blur` alone no longer sends a request).
 - `category-list` had no page `<title>`; factories no longer pass `array|string` faker values to `ucfirst()`/`Str::slug()`.
 
 ### Removed

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace VmEngine\Example;
 
 use Illuminate\Support\ServiceProvider;
+use VmEngine\Example\Console\SetupCommand;
 use VmEngine\Synapse\Traits\AutoRegistersComponents;
 
 class ExampleServiceProvider extends ServiceProvider
@@ -21,5 +22,9 @@ class ExampleServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'example');
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'example');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([SetupCommand::class]);
+        }
     }
 }

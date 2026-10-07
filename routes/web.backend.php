@@ -18,6 +18,22 @@ Route::group([], function () {
     Route::livewire('/nodes', 'example::node-tree')->name('nodes')
         ->middleware('can-access:example.node');
 
+    Route::livewire('/editor/{id?}', 'example::example-editor')->name('editor')
+        ->middleware('can-access:example.manage.create|example.manage.update');
+
+    Route::prefix('forms')->name('forms.')->group(function () {
+        Route::livewire('/modal-child', 'example::forms.modal-child')->name('modal-child')
+            ->middleware('can-access:example.manage.update');
+        Route::livewire('/drawer', 'example::forms.drawer-form')->name('drawer')
+            ->middleware('can-access:example.manage.create|example.manage.update');
+        Route::livewire('/tabbed/{id?}', 'example::forms.tabbed')->name('tabbed')
+            ->middleware('can-access:example.manage.create|example.manage.update');
+        Route::livewire('/modal-wizard', 'example::forms.modal-wizard')->name('modal-wizard')
+            ->middleware('can-access:example.manage.create');
+        Route::livewire('/page-wizard', 'example::forms.page-wizard')->name('page-wizard')
+            ->middleware('can-access:example.manage.create');
+    });
+
     Route::prefix('lists')->name('lists.')->group(function () {
         Route::livewire('/card-grid', 'example::lists.card-grid')->name('card-grid')
             ->middleware('can-access:example.manage');

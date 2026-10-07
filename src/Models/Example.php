@@ -86,8 +86,15 @@ class Example extends Model
         'color',
     ];
 
+    /**
+     * Legacy showcase columns are NOT NULL; default them so the newer forms
+     * (editor, drawer, wizards) can create rows without those fields.
+     */
     protected $attributes = [
         'status' => 'draft',
+        'protected' => '',
+        'number' => 0,
+        'dropdown' => 0,
     ];
 
     protected $casts = [

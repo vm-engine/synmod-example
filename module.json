@@ -15,7 +15,9 @@
     "url_prefix": "example",
     "dependencies": {
         "npm": {
-            "main": {},
+            "main": {
+                "jodit": "^4.15"
+            },
             "dev": {}
         },
         "composer": {

@@ -25,21 +25,24 @@
             <option value="{{ $category['value'] }}">{{ $category['label'] }}</option>
         @endforeach
     </select>
-    <input
-        class="form-input"
-        type="date"
-        aria-label="{{ __('example::lists.due_from') }}"
-        title="{{ __('example::lists.due_from') }}"
-        wire:model.live="dueFrom"
-    >
+    <div title="{{ __('example::lists.due_from') }}">
+        <x-synapse-datepicker
+            wire:model.live="dueFrom"
+            :placeholder="__('example::lists.due_from')"
+            aria-label="{{ __('example::lists.due_from') }}"
+        />
+    </div>
     <div class="flex gap-2">
-        <input
-            class="form-input flex-1"
-            type="date"
-            aria-label="{{ __('example::lists.due_to') }}"
+        <div
+            class="flex-1"
             title="{{ __('example::lists.due_to') }}"
-            wire:model.live="dueTo"
         >
+            <x-synapse-datepicker
+                wire:model.live="dueTo"
+                :placeholder="__('example::lists.due_to')"
+                aria-label="{{ __('example::lists.due_to') }}"
+            />
+        </div>
         <button
             class="btn secondary"
             type="button"

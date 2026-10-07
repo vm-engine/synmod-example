@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use VmEngine\Example\Factories\ExampleAttachmentFactory;
+use VmEngine\Synapse\Traits\WithDeleteToken;
 
 /**
  * @property int $id
@@ -27,6 +28,8 @@ class ExampleAttachment extends Model
 {
     /** @use HasFactory<ExampleAttachmentFactory> */
     use HasFactory;
+
+    use WithDeleteToken;
 
     protected $fillable = ['example_id', 'path', 'original_name', 'mime', 'size', 'position'];
 

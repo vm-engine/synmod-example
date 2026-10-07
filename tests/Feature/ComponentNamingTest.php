@@ -47,4 +47,11 @@ it('has no public method that shares a name with a public property', function (s
     'example::lists.load-more',
     'example::lists.inline-filters',
     'example::lists.export',
+    'example::example-editor',
+    'example::forms.modal-child',
+    'example::forms.quick-edit',
+    'example::forms.drawer-form',
+    'example::forms.tabbed',
+    'example::forms.modal-wizard',
+    'example::forms.page-wizard',
 ]);
