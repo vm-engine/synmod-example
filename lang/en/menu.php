@@ -8,5 +8,7 @@ return [
         'index' => 'Example List',
         'form' => 'Example Form',
         'category' => 'Category',
+        'tags' => 'Tags',
+        'nodes' => 'Nodes',
     ],
 ];

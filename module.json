@@ -61,6 +61,22 @@
                     "class": "",
                     "icon": "ph ph-folder",
                     "acl": "example.category"
+                },
+                "tags": {
+                    "id": "tags",
+                    "name": "__example::menu.be.tags",
+                    "route": "example.tags",
+                    "class": "",
+                    "icon": "ph ph-tag",
+                    "acl": "example.tag"
+                },
+                "nodes": {
+                    "id": "nodes",
+                    "name": "__example::menu.be.nodes",
+                    "route": "example.nodes",
+                    "class": "",
+                    "icon": "ph ph-tree-structure",
+                    "acl": "example.node"
                 }
             }
         }
@@ -84,6 +100,20 @@
         },
         "category": {
             "label": "__example::acl.category",
+            "create": 1,
+            "read": 1,
+            "update": 1,
+            "delete": 1
+        },
+        "tag": {
+            "label": "__example::acl.tag",
+            "create": 1,
+            "read": 1,
+            "update": 1,
+            "delete": 1
+        },
+        "node": {
+            "label": "__example::acl.node",
             "create": 1,
             "read": 1,
             "update": 1,

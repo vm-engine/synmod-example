@@ -13,4 +13,29 @@ Route::group([], function () {
         ->middleware('can-access:example.manage.create|example.manage.update');
     Route::livewire('/category', 'example::category-list')->name('category')
         ->middleware('can-access:example.category');
+    Route::livewire('/tags', 'example::tag-list')->name('tags')
+        ->middleware('can-access:example.tag');
+    Route::livewire('/nodes', 'example::node-tree')->name('nodes')
+        ->middleware('can-access:example.node');
+
+    Route::prefix('lists')->name('lists.')->group(function () {
+        Route::livewire('/card-grid', 'example::lists.card-grid')->name('card-grid')
+            ->middleware('can-access:example.manage');
+        Route::livewire('/bulk', 'example::lists.bulk-actions')->name('bulk')
+            ->middleware('can-access:example.manage');
+        Route::livewire('/trashed', 'example::lists.trashed')->name('trashed')
+            ->middleware('can-access:example.manage.delete');
+        Route::livewire('/sortable', 'example::lists.sortable')->name('sortable')
+            ->middleware('can-access:example.manage.update');
+        Route::livewire('/grouped', 'example::lists.grouped')->name('grouped')
+            ->middleware('can-access:example.manage');
+        Route::livewire('/expandable', 'example::lists.expandable')->name('expandable')
+            ->middleware('can-access:example.manage');
+        Route::livewire('/load-more', 'example::lists.load-more')->name('load-more')
+            ->middleware('can-access:example.manage');
+        Route::livewire('/inline-filters', 'example::lists.inline-filters')->name('inline-filters')
+            ->middleware('can-access:example.manage');
+        Route::livewire('/export', 'example::lists.export')->name('export')
+            ->middleware('can-access:example.manage');
+    });
 });

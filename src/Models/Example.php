@@ -57,6 +57,7 @@ class Example extends Model
 
     /** @use HasFactory<ExampleFactory> */
     use HasFactory;
+
     use HasUpdater;
     use SoftDeletes;
     use WithDeleteToken;

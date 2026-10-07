@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Showcase schema via additive migrations: `examples.slug` (unique, backfilled for existing rows), `status` (`ExampleStatus` enum: draft/review/published with label + synapse color), `due_at`, `content`, `meta` (JSON), `position`, `created_by`/`updated_by` (`HasCreator`/`HasUpdater`), soft deletes.
 - `ExampleTag` (many-to-many), `ExampleNode` (self-referencing tree), `ExampleAttachment` (files deleted with the row and on example force delete) with factories; `ExampleFactory` states `draft()`/`review()`/`published()`/`dueThisMonth()`/`withTags()`.
 - Seeders: 8 tags, 60 examples (even status spread, 20 due this month, 1-3 tags each), 30-node three-level tree.
+- **List patterns** (sub-project 2, all reachable from the Pattern Catalog, 18/57 built): card grid with status chips, bulk select + bulk status/delete with "select all matching", trash & restore with delete-forever, drag-sortable rows (`wire:sort`), grouped table, expandable rows, load more / infinite scroll (`wire:intersect`), inline filter row (URL state) and Excel export (sync download + queued export with progress) sharing one serializable `ExampleExportQuery`.
+- **Tags** screen (inline edit with `x-synapse-color-picker`, add row, delete) and **Nodes** screen (tree with drag reorder across parents via `wire:sort` groups, inline add/rename, branch delete); new `example.tag` / `example.node` permissions and menu items.
 
 ### Changed
 - **Requires `vm-engine/synapse` ^3.2 and `vm-engine/synapps-auth` ^3.0**, Laravel ^11.0|^12.0|^13.0.
@@ -25,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CSP-safe Alpine.js compatibility.** `category-form`, `category-list`, and `example-list` migrated off inline `x-data="{ ... }"` object literals with methods and multi-statement `@click`/`x-on:*` expressions to the `Alpine.data()` registry pattern (required by `vm-engine/synapse` ^3.0's new default CSP-safe Alpine build), guarded against the `alpine:init`/`wire:navigate` timing race. `example-list`'s use of the `withBack()` global JS helper switched to the `$withBack()` Alpine magic, since bare globals aren't resolvable inside a CSP-restricted directive expression.
 - `ExampleFactory`'s `@extends Factory<...>` PHPDoc referenced a nonexistent `App\Models\Model` placeholder type instead of the actual `Example` model — flagged by PHPStan level 5.
 - Migrated the remaining `<x-synapse-select>`/`<x-synapse-multiselect>` usages (removed from `vm-engine/synapse` v3.0) to `<x-synapse-adv-select>` in `category-list`, `example-form`, and `example-list` — these views were throwing unknown-component errors. `statusOptions()`/`options()` reshaped to the value/label array format the new component requires.
+- Tag slugs are now unique (`-2`, `-3`…) when two names slugify the same.
 - `category-list` had no page `<title>`; factories no longer pass `array|string` faker values to `ucfirst()`/`Str::slug()`.
 
 ### Removed

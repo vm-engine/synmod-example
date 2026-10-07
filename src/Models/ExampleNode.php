@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use VmEngine\Example\Factories\ExampleNodeFactory;
+use VmEngine\Synapse\Traits\WithDeleteToken;
 
 /**
  * @property int $id
@@ -29,6 +30,8 @@ class ExampleNode extends Model
 {
     /** @use HasFactory<ExampleNodeFactory> */
     use HasFactory;
+
+    use WithDeleteToken;
 
     protected $fillable = ['parent_id', 'name', 'description', 'position'];
 
@@ -47,6 +50,24 @@ class ExampleNode extends Model
     public function children(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id')->orderBy('position');
+    }
+
+    /**
+     * True when $nodeId is this node or one of its ancestors (moving $nodeId here would create a cycle).
+     */
+    public function isWithinBranchOf(int $nodeId): bool
+    {
+        $current = $this;
+
+        while ($current !== null) {
+            if ($current->id === $nodeId) {
+                return true;
+            }
+
+            $current = $current->parent;
+        }
+
+        return false;
     }
 
     /** @param  Builder<self>  $builder */

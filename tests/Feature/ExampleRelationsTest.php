@@ -64,3 +64,10 @@ it('removes attachment files when the example is force deleted', function () {
     Storage::disk('public')->assertMissing('examples/attachments/b.pdf');
     expect(ExampleAttachment::query()->count())->toBe(0);
 });
+
+it('keeps tag slugs unique', function () {
+    ExampleTag::factory()->create(['name' => 'Live Wire', 'slug' => null]);
+    $second = ExampleTag::factory()->create(['name' => 'Live-Wire', 'slug' => null]);
+
+    expect($second->slug)->toBe('live-wire-2');
+});
