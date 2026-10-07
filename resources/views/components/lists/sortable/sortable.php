@@ -9,9 +9,11 @@ use Livewire\Component;
 use VmEngine\Example\Livewire\Concerns\ListPatternPage;
 use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
+    use GuardsBackendPermission;
     use ListPatternPage;
 
     #[Url()]
@@ -35,7 +37,7 @@ new class extends Component
     public function moveItem(int|string $id, int $position): void
     {
         // Route middleware does not re-run on Livewire action requests, so authorize here.
-        if (! $this->allowed('example.manage.update')) {
+        if (! $this->guardAction('example.manage.update')) {
             return;
         }
 
@@ -80,16 +82,5 @@ new class extends Component
             ->orderBy('position')
             ->orderBy('id')
             ->get();
-    }
-
-    private function allowed(string $acl): bool
-    {
-        if (auth()->user()?->can($acl)) {
-            return true;
-        }
-
-        $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::lists.not_allowed'));
-
-        return false;
     }
 };

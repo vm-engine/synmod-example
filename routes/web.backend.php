@@ -56,6 +56,20 @@ Route::group([], function () {
         ->middleware('can-access:example.manage');
     Route::livewire('/components', 'example::pages.component-gallery')->name('components')
         ->middleware('can-access:example.any');
+    Route::prefix('integrations')->name('integrations.')->group(function () {
+        Route::livewire('/auth-helpers', 'example::integrations.auth-helpers')->name('auth-helpers')
+            ->middleware('can-access:example.any');
+        Route::livewire('/activity', 'example::integrations.activity')->name('activity')
+            ->middleware('can-access:example.manage.read');
+        Route::livewire('/abac', 'example::integrations.abac')->name('abac')
+            ->middleware('can-access:example.manage.read');
+        Route::livewire('/api', 'example::integrations.api')->name('api')
+            ->middleware('can-access:example.manage.read');
+        Route::livewire('/notifications', 'example::integrations.notifications')->name('notifications')
+            ->middleware('can-access:example.manage.read');
+        Route::livewire('/import/{task?}', 'example::integrations.import')->name('import')
+            ->middleware('can-access:example.manage.create');
+    });
 
     Route::prefix('lists')->name('lists.')->group(function () {
         Route::livewire('/card-grid', 'example::lists.card-grid')->name('card-grid')

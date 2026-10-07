@@ -10,10 +10,12 @@ use VmEngine\Example\Livewire\Concerns\FormPatternPage;
 use VmEngine\Example\Livewire\Concerns\HasMetaRepeater;
 use VmEngine\Example\Livewire\Forms\ExampleEditorForm;
 use VmEngine\Example\Models\Example;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
     use FormPatternPage;
+    use GuardsBackendPermission;
     use HasMetaRepeater;
 
     /** Which tab owns each form field (error badges). */
@@ -62,9 +64,7 @@ new class extends Component
     {
         $action = $this->form->example ? 'update' : 'create';
 
-        if (! auth()->user()?->can('example.manage.'.$action)) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::forms.not_allowed'));
-
+        if (! $this->guardAction('example.manage.'.$action)) {
             return;
         }
 

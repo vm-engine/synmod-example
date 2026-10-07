@@ -12,10 +12,12 @@ use VmEngine\Example\Models\ExampleCategory;
 use VmEngine\Example\Support\ExampleStats;
 use VmEngine\Synapse\Services\Excel\ExcelExporter;
 use VmEngine\Synapse\Traits\WithExcelExport;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
     use FiltersExamples;
+    use GuardsBackendPermission;
     use PagePatternPage;
     use WithExcelExport;
 
@@ -36,9 +38,7 @@ new class extends Component
 
     public function exportReport(): void
     {
-        if (! auth()->user()?->can('example.manage.read')) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::pages.not_allowed'));
-
+        if (! $this->guardAction('example.manage.read')) {
             return;
         }
 

@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace VmEngine\Example\Console;
 
 use Illuminate\Console\Command;
+use VmEngine\Example\Support\ExampleAuthorRole;
+use VmEngine\Example\Support\ExampleSearchIndex;
 
 /**
  * Wires the module's admin JS (rich-text editor) into the host's
- * resources/js/app.js. Idempotent.
+ * resources/js/app.js and ensures the Example author demo role. Idempotent.
  */
 class SetupCommand extends Command
 {
     protected $signature = 'example:setup';
 
-    protected $description = 'Add the example module JS (rich-text editor) to resources/js/app.js';
+    protected $description = 'Add the example module JS to resources/js/app.js and ensure the Example author demo role';
 
     private const IMPORT = "import '../../vendor/vm-engine/synmod-example/resources/js/example.js';";
 
@@ -22,6 +24,10 @@ class SetupCommand extends Command
 
     public function handle(): int
     {
+        ExampleAuthorRole::ensure();
+        $this->line('  roles — Example author role ensured');
+        $this->line('  search — '.ExampleSearchIndex::reindex().' examples indexed');
+
         $path = base_path('resources/js/app.js');
 
         if (! is_file($path)) {

@@ -10,12 +10,38 @@ namespace VmEngine\Example\Catalog;
  * the `backend.` prefix) and real source paths relative to the package root;
  * `planned` entries carry neither. Each sub-project flips its own entries.
  *
+ * `route` is a backend route name, or `frontend:<name>` for a public route.
+ *
  * @phpstan-type Pattern array{key: string, group: string, title: string, description: string, status: 'built'|'planned', route: string|null, sources: list<string>, subProject: int}
  */
 final class PatternCatalog
 {
     /** @var list<string> */
     public const GROUPS = ['lists', 'forms', 'pages', 'components', 'integrations'];
+
+    /**
+     * Link for a built pattern: a backend route, or `frontend:<name>` for a public one.
+     *
+     * @param  Pattern  $pattern
+     */
+    public static function url(array $pattern): ?string
+    {
+        $route = $pattern['route'];
+
+        if ($route === null) {
+            return null;
+        }
+
+        return str_starts_with($route, 'frontend:') ? route(substr($route, 9)) : backend_route($route);
+    }
+
+    /**
+     * Full route name to look up with Route::has().
+     */
+    public static function routeName(string $route): string
+    {
+        return str_starts_with($route, 'frontend:') ? substr($route, 9) : 'backend.'.$route;
+    }
 
     /**
      * @return list<Pattern>
@@ -76,19 +102,19 @@ final class PatternCatalog
             self::built('comp-gallery', 'components', 'Component gallery', 'Alerts, badges, panels, stat tiles, lightbox, toastr, confirm dialog and drawer in one place.', 'example.components', ['resources/views/components/pages/component-gallery'], 4),
 
             // Integrations
-            self::planned('int-auth-helpers', 'integrations', 'Auth directives + helpers', '@canAccess, @hasRole, @isDev and the auth helper functions.', 5),
-            self::planned('int-activity-log', 'integrations', 'Activity log + viewer', 'log_activity() with before/after snapshots and the embedded viewer.', 5),
-            self::planned('int-otp', 'integrations', 'OTP-protected action', 'Re-verify with a one-time password before a sensitive action.', 5),
-            self::planned('int-abac', 'integrations', 'Conditional permission', 'ABAC condition evaluated against the record.', 5),
-            self::planned('int-guard', 'integrations', 'Guarded actions', 'GuardsBackendPermission inside Livewire actions.', 5),
-            self::planned('int-api', 'integrations', 'API v1', 'Token-authenticated JSON endpoints with API resources.', 5),
-            self::planned('int-hmac', 'integrations', 'HMAC-signed endpoint', 'api.signed request signing.', 5),
-            self::planned('int-notify', 'integrations', 'Notifications', 'Notify to users/roles with bell + toastr.', 5),
-            self::planned('int-search', 'integrations', 'Global search', 'Examples in the Ctrl/Cmd+K palette.', 5),
-            self::planned('int-import', 'integrations', 'Excel import', 'Queued import with validation and progress.', 5),
-            self::planned('int-user-field', 'integrations', 'User field extension', 'Add a field to the user form/model via SynAuthExtension.', 5),
-            self::planned('int-frontend', 'integrations', 'Frontend pages', 'Public list, detail and search pages on the theme layout.', 5),
-            self::planned('int-remember', 'integrations', 'Remembered filters', 'RemembersQueryParams restores list filters on return.', 5),
+            self::built('int-auth-helpers', 'integrations', 'Auth directives + helpers', '@canAccess, @hasRole, @isDev and friends next to their live result for you, plus the auth helper functions.', 'example.integrations.auth-helpers', ['resources/views/components/integrations/auth-helpers'], 5),
+            self::built('int-activity-log', 'integrations', 'Activity log + viewer', 'An observer logs every example write with whitelisted before/after snapshots; the page embeds the OTP-gated metadata viewer.', 'example.integrations.activity', ['resources/views/components/integrations/activity', 'src/Observers/ExampleObserver.php', 'src/Support/ExampleActivity.php'], 5),
+            self::built('int-otp', 'integrations', 'OTP-protected action', 'Empty trash asks for a one-time password; a single-use, purpose-bound token unlocks the delete.', 'example.lists.trashed', ['resources/views/components/lists/trashed'], 5),
+            self::built('int-abac', 'integrations', 'Conditional permission', 'Example author role: update/delete only your own examples (created_by = $user.id), checked with the record.', 'example.integrations.abac', ['resources/views/components/integrations/abac', 'src/Support/ExampleAuthorRole.php'], 5),
+            self::built('int-guard', 'integrations', 'Guarded actions', 'Every Livewire action in the module starts with guardAction() from GuardsBackendPermission.', 'example.integrations.auth-helpers', ['resources/views/components/integrations/auth-helpers', 'resources/views/components/lists/trashed'], 5),
+            self::built('int-api', 'integrations', 'API v1', 'Token-authenticated JSON endpoints with API resources and FormRequests; Postman collection included.', 'example.integrations.api', ['routes/api.v1.php', 'src/Http/Controllers/Api/ExampleApiController.php', 'src/Http/Resources/ExampleResource.php', 'docs/postman/example-api-v1.postman_collection.json'], 5),
+            self::built('int-hmac', 'integrations', 'HMAC-signed endpoint', 'POST /examples needs X-Timestamp + X-Signature (api.signed); the Postman request signs itself.', 'example.integrations.api', ['routes/api.v1.php', 'src/Http/Requests/StoreExampleRequest.php'], 5),
+            self::built('int-notify', 'integrations', 'Notifications', 'Publishing notifies admins (bell + toast), imports notify the importer; lang keys rendered per viewer.', 'example.integrations.notifications', ['resources/views/components/integrations/notifications', 'src/Notifications', 'src/Support/ExampleNotifier.php'], 5),
+            self::built('int-search', 'integrations', 'Global search', 'Examples and key pages in the Ctrl/Cmd+K palette, kept in sync by the observer.', 'example.catalog', ['src/Support/ExampleSearchIndex.php', 'src/Console/SearchReindexCommand.php', 'module.json'], 5),
+            self::built('int-import', 'integrations', 'Excel import', 'Queued import with per-row validation, a skipped-rows report, live progress and a template.', 'example.integrations.import', ['resources/views/components/integrations/import', 'src/Imports/ExampleImportProcessor.php'], 5),
+            self::built('int-user-field', 'integrations', 'User field extension', 'A default example category on the backend user form (SynAuthExtension), preselected in the editor and calendar.', 'example.editor', ['database/migrations/2026_10_07_000001_add_example_default_category_to_users_table.php', 'src/ExampleServiceProvider.php', 'resources/views/partials/user-default-category.blade.php', 'src/Support/UserDefaultCategory.php'], 5),
+            self::built('int-frontend', 'integrations', 'Frontend pages', 'Public list, detail and search of published examples on the theme layout.', 'frontend:example.index', ['routes/web.php', 'resources/views/components/frontend', 'src/Livewire/Concerns/FrontendPage.php'], 5),
+            self::built('int-remember', 'integrations', 'Remembered filters', 'RemembersQueryParams restores the example list and inline filters on return; the URL always wins.', 'example.index', ['resources/views/components/example-list', 'resources/views/components/lists/inline-filters'], 5),
         ];
     }
 
@@ -106,23 +132,6 @@ final class PatternCatalog
             'status' => 'built',
             'route' => $route,
             'sources' => $sources,
-            'subProject' => $subProject,
-        ];
-    }
-
-    /**
-     * @return Pattern
-     */
-    private static function planned(string $key, string $group, string $title, string $description, int $subProject): array
-    {
-        return [
-            'key' => $key,
-            'group' => $group,
-            'title' => $title,
-            'description' => $description,
-            'status' => 'planned',
-            'route' => null,
-            'sources' => [],
             'subProject' => $subProject,
         ];
     }

@@ -13,10 +13,12 @@ use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
 use VmEngine\Example\Support\RichTextSanitizer;
 use VmEngine\Example\Support\TagResolver;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
     use FormPatternPage;
+    use GuardsBackendPermission;
     use HasTagSearch;
     use WizardSteps;
 
@@ -62,9 +64,7 @@ new class extends Component
 
     public function finish(): void
     {
-        if (! auth()->user()?->can('example.manage.create')) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::forms.not_allowed'));
-
+        if (! $this->guardAction('example.manage.create')) {
             return;
         }
 

@@ -79,5 +79,4 @@ return [
     'save' => 'Save',
     'cancel' => 'Cancel',
     'actions' => 'Actions',
-    'not_allowed' => 'You are not allowed to do that.',
 ];

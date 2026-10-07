@@ -11,9 +11,11 @@ use VmEngine\Example\Livewire\Concerns\PagePatternPage;
 use VmEngine\Example\Models\Example;
 use VmEngine\Example\Support\ExampleSettings;
 use VmEngine\Example\Support\ExampleStats;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
+    use GuardsBackendPermission;
     use PagePatternPage;
 
     private const CARDS_PER_COLUMN = 30;
@@ -34,9 +36,7 @@ new class extends Component
      */
     public function moveItem(int|string $item, int $position, string $column): void
     {
-        if (! auth()->user()?->can('example.manage.update')) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::pages.not_allowed'));
-
+        if (! $this->guardAction('example.manage.update')) {
             return;
         }
 
@@ -63,7 +63,7 @@ new class extends Component
 
     public function confirmPublish(): void
     {
-        if (! auth()->user()?->can('example.manage.update')) {
+        if (! $this->guardAction('example.manage.update')) {
             return;
         }
 

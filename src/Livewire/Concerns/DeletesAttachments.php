@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace VmEngine\Example\Livewire\Concerns;
 
 use VmEngine\Example\Models\ExampleAttachment;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 /**
  * Token-checked attachment delete (needs example.manage.update).
@@ -15,14 +16,14 @@ use VmEngine\Example\Models\ExampleAttachment;
  */
 trait DeletesAttachments
 {
+    use GuardsBackendPermission;
+
     public function deleteAttachment(string $token): void
     {
         // Closes x-synapse-confirm-dialog on every path.
         $this->dispatch('synapse-confirmed');
 
-        if (! auth()->user()?->can('example.manage.update')) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::forms.not_allowed'));
-
+        if (! $this->guardAction('example.manage.update')) {
             return;
         }
 

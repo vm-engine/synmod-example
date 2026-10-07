@@ -10,11 +10,13 @@ use VmEngine\Example\Livewire\Concerns\FiltersExamples;
 use VmEngine\Example\Livewire\Concerns\ListPatternPage;
 use VmEngine\Example\Models\ExampleCategory;
 use VmEngine\Example\Support\ExampleSettings;
+use VmEngine\Synapse\Traits\RemembersQueryParams;
 
 new class extends Component
 {
     use FiltersExamples;
     use ListPatternPage;
+    use RemembersQueryParams;
     use WithPagination;
 
     public int $perPage = 15;
@@ -28,6 +30,14 @@ new class extends Component
     public function showDueColumn(): bool
     {
         return ExampleSettings::showDueColumn();
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function rememberedParams(): array
+    {
+        return ['q', 'filterStatus', 'filterCategory', 'dueFrom', 'dueTo'];
     }
 
     public function title(): string

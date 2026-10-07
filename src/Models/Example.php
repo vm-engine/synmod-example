@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace VmEngine\Example\Models;
 
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use VmEngine\Example\Enums\ExampleStatus;
 use VmEngine\Example\Factories\ExampleFactory;
+use VmEngine\Example\Observers\ExampleObserver;
 use VmEngine\Synapse\Traits\WithDeleteToken;
 use VmEngine\SynAuth\Traits\HasCreator;
 use VmEngine\SynAuth\Traits\HasUpdater;
@@ -51,6 +53,7 @@ use VmEngine\SynAuth\Traits\HasUpdater;
  * @property Carbon|null $deleted_at
  * @property-read ExampleCategory|null $category
  */
+#[ObservedBy([ExampleObserver::class])]
 class Example extends Model
 {
     use HasCreator;
@@ -168,6 +171,13 @@ class Example extends Model
     protected function search(Builder $builder, string $q): void
     {
         $builder->whereAny(['text', 'textarea', 'email'], 'like', "%{$q}%");
+    }
+
+    /** @param  Builder<self>  $builder */
+    #[Scope]
+    protected function published(Builder $builder): void
+    {
+        $builder->where('status', ExampleStatus::Published->value);
     }
 
     /** @return BelongsTo<ExampleCategory, $this> */

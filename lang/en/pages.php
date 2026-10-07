@@ -71,7 +71,6 @@ return [
     'wip_limit' => 'Work-in-progress limit per column (0 = off)',
     'save' => 'Save',
     'settings_saved' => 'Settings saved.',
-    'not_allowed' => 'You are not allowed to do that.',
     'over_limit' => 'Over limit (:limit)',
     'more_cards' => '+:count more',
     'publish_note' => 'Publish note',

@@ -29,7 +29,7 @@ it('points every built pattern at a real route and real source paths', function 
 
     foreach (array_filter(PatternCatalog::patterns(), fn (array $p): bool => $p['status'] === 'built') as $pattern) {
         expect($pattern['route'])->not->toBeNull()
-            ->and(Route::has('backend.'.$pattern['route']))->toBeTrue("Route missing for {$pattern['key']}")
+            ->and(Route::has(PatternCatalog::routeName($pattern['route'])))->toBeTrue("Route missing for {$pattern['key']}")
             ->and($pattern['sources'])->not->toBeEmpty();
 
         foreach ($pattern['sources'] as $source) {

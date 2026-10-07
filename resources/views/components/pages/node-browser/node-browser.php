@@ -7,9 +7,11 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use VmEngine\Example\Livewire\Concerns\PagePatternPage;
 use VmEngine\Example\Models\ExampleNode;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
+    use GuardsBackendPermission;
     use PagePatternPage;
 
     #[Url()]
@@ -41,9 +43,7 @@ new class extends Component
 
     public function save(): void
     {
-        if (! auth()->user()?->can('example.node.update')) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::pages.not_allowed'));
-
+        if (! $this->guardAction('example.node.update')) {
             return;
         }
 

@@ -7,9 +7,12 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use VmEngine\Example\Enums\ExampleStatus;
 use VmEngine\Example\Models\Example;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
+    use GuardsBackendPermission;
+
     public ?int $exampleId = null;
 
     public string $text = '';
@@ -40,9 +43,7 @@ new class extends Component
 
     public function save(): void
     {
-        if (! auth()->user()?->can('example.manage.update')) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::forms.not_allowed'));
-
+        if (! $this->guardAction('example.manage.update')) {
             return;
         }
 

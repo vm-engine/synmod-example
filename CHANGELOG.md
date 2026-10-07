@@ -20,6 +20,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Page patterns** (sub-project 4, 44/57 built): dashboard (stat tiles, ApexCharts donut + line, lazy panels), status report (status × category matrix, bar chart updated in place, print view on a bare layout, queued Excel export), live export progress page (`wire:poll`, owner-only, download), detail page with Overview / Attachments / Related tabs (lazy children, lightbox, confirm delete), kanban board (drag between status columns, publish-note gate, WIP limit badge), calendar (month view of due dates, day quick-create), split-pane node browser, empty states and a component gallery.
 - **Settings** page (`/example/settings`, new `example.settings` permission and menu item): rows per page, due column, default status, max attachments and kanban WIP limit, stored in DbConfig by `ExampleSettings` and read by the list, inline filters, editor, drawer form and kanban.
 - `<x-example::chart>`: ApexCharts wrapper (lazy `import('apexcharts')`, `wire:ignore`, updated via `example-chart-{id}` events, dark-mode aware, empty state); `ExampleStats` aggregates; shared `empty-state` partial (also used by the example list, with "Clear filters").
+- **Integration patterns** (sub-project 5, catalog complete at 57/57), all under the catalog's Integrations group:
+  - Auth directives + helpers page with live results and a guarded-action demo; every Livewire action in the module now checks permissions through `GuardsBackendPermission::guardAction()` (a guard test blocks hand-rolled checks).
+  - Activity log: an `ExampleObserver` (`#[ObservedBy]`) records every example write with whitelisted before/after snapshots (never content); bulk actions and Empty trash log one summary. New **Example activity** page with the OTP-gated metadata viewer.
+  - **Empty trash** on the trash list, protected by a one-time password (single-use, purpose-bound token).
+  - **Example author** role (seeder + `example:setup`): update/delete only your own examples via an ABAC condition; Conditional permission demo page.
+  - User field extension: `users.example_default_category_id` (migration) on the backend user form via `SynAuthExtension`, preselected in the editor and calendar quick-create.
+  - Remembered filters (`RemembersQueryParams`) on the example list and inline filters.
+  - **API v1** (`routes/api.v1.php` → `/api/v1/example/*`): list/show/categories/status, API resources and FormRequests; HMAC-signed `POST /examples` (`api.signed`); API page listing the endpoints; Postman collection in `docs/postman/` (login + self-signing create).
+  - Notifications: publishing notifies admins (except the actor; one summary for bulk), a finished import notifies the importer; test-notification page.
+  - Global search: examples and three shortcuts in the Ctrl/⌘+K palette (`module.json` `searchables`), kept in sync by the observer; `example:search-reindex` command.
+  - **Excel import** page: template download, xlsx/csv upload, queued per-row validation with a skipped-rows report and live progress.
+  - Public **frontend pages** (`/example`): list with category filter, detail by slug and search with highlighting — published examples only.
 
 ### Changed
 - **Requires `vm-engine/synapse` ^3.2 and `vm-engine/synapps-auth` ^3.0**, Laravel ^11.0|^12.0|^13.0.
@@ -33,6 +45,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example titles in the list link to the detail page.
 - All date inputs use `<x-synapse-datepicker>` (filter row uses `wire:model.live`); a guard test fails on native `type="date"` inputs.
 - `Example` defaults the NOT NULL legacy columns (`protected`, `number`, `dropdown`) so the new forms can create rows; `ExampleAttachment` uses `WithDeleteToken`.
+
+- Requires `vm-engine/synapse` 3.3 (`ReceivesImportTask`) and `vm-engine/synapps-auth` 3.0.1 (extension fields, OTP modal); bump the composer constraints at release.
+- The catalog links a `frontend:<route>` entry to a public page.
 
 ### Fixed
 - **CSP-safe Alpine.js compatibility.** `category-form`, `category-list`, and `example-list` migrated off inline `x-data="{ ... }"` object literals with methods and multi-statement `@click`/`x-on:*` expressions to the `Alpine.data()` registry pattern (required by `vm-engine/synapse` ^3.0's new default CSP-safe Alpine build), guarded against the `alpine:init`/`wire:navigate` timing race. `example-list`'s use of the `withBack()` global JS helper switched to the `$withBack()` Alpine magic, since bare globals aren't resolvable inside a CSP-restricted directive expression.

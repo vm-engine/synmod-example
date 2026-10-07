@@ -8,9 +8,12 @@ use Livewire\Attributes\Computed;
 use Livewire\Component;
 use VmEngine\Example\Models\ExampleNode;
 use VmEngine\Synapse\Services\Helper\Breadcrumbs;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
+    use GuardsBackendPermission;
+
     /** Parent key ("root" or a node id) whose inline add input is open. */
     public ?string $addingTo = null;
 
@@ -35,7 +38,7 @@ new class extends Component
      */
     public function moveNode(int|string $id, int $position, string $parentKey): void
     {
-        if (! $this->allowed('example.node.update')) {
+        if (! $this->guardAction('example.node.update')) {
             return;
         }
 
@@ -84,7 +87,7 @@ new class extends Component
 
     public function addNode(): void
     {
-        if (! $this->allowed('example.node.create') || $this->addingTo === null) {
+        if (! $this->guardAction('example.node.create') || $this->addingTo === null) {
             return;
         }
 
@@ -112,7 +115,7 @@ new class extends Component
 
     public function saveRename(): void
     {
-        if (! $this->allowed('example.node.update') || $this->renamingId === null) {
+        if (! $this->guardAction('example.node.update') || $this->renamingId === null) {
             return;
         }
 
@@ -133,7 +136,7 @@ new class extends Component
         // Closes x-synapse-confirm-dialog on every path.
         $this->dispatch('synapse-confirmed');
 
-        if (! $this->allowed('example.node.delete')) {
+        if (! $this->guardAction('example.node.delete')) {
             return;
         }
 
@@ -185,17 +188,6 @@ new class extends Component
         foreach ($ids as $index => $nodeId) {
             ExampleNode::query()->whereKey($nodeId)->update(['position' => $index]);
         }
-    }
-
-    private function allowed(string $acl): bool
-    {
-        if (auth()->user()?->can($acl)) {
-            return true;
-        }
-
-        $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::lists.not_allowed'));
-
-        return false;
     }
 
     private function saved(): void

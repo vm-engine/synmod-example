@@ -7,9 +7,12 @@ use Livewire\Component;
 use VmEngine\Example\Enums\ExampleStatus;
 use VmEngine\Example\Support\ExampleSettings;
 use VmEngine\Synapse\Services\Helper\Breadcrumbs;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
+    use GuardsBackendPermission;
+
     /** Which settings each tab saves. */
     private const TAB_FIELDS = [
         'lists' => ['perPage', 'showDueColumn'],
@@ -94,9 +97,7 @@ new class extends Component
 
     private function saveTab(string $tab): void
     {
-        if (! auth()->user()?->can('example.settings.update')) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::pages.not_allowed'));
-
+        if (! $this->guardAction('example.settings.update')) {
             return;
         }
 

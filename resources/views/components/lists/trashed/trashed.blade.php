@@ -2,6 +2,7 @@
     @include('synapps::components.layouts.partials.breadcrumbs', ['breadcrumbs' => $this->breadcrumbs])
 
     <x-synapse-confirm-dialog />
+    <livewire:synauth-otp-verify-action />
 
     <x-synapse-panel :title="__('example::lists.trashed')">
         <x-slot:toolbar>
@@ -15,6 +16,15 @@
                 @class(['btn', 'primary' => $view === 'trash', 'secondary' => $view !== 'trash'])
                 wire:click="setView('trash')"
             ><span class="ph ph-trash"></span> {{ __('example::lists.trash') }}</button>
+            @if ($view === 'trash')
+                @canAccess('example.manage.delete')
+                    <button
+                        class="btn danger"
+                        type="button"
+                        wire:click="emptyTrash"
+                    ><span class="ph ph-shield-warning"></span> {{ __('example::integrations.empty_trash') }}</button>
+                @endcanAccess
+            @endif
         </x-slot:toolbar>
 
         <div class="syn-panel-body">

@@ -15,10 +15,13 @@ use VmEngine\Example\Livewire\Forms\ExampleEditorForm;
 use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
 use VmEngine\Example\Support\ExampleSettings;
+use VmEngine\Example\Support\UserDefaultCategory;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
     use FormPatternPage;
+    use GuardsBackendPermission;
     use HasAttachments;
     use HasMetaRepeater;
     use HasTagSearch;
@@ -30,6 +33,7 @@ new class extends Component
     {
         if ($id === null) {
             $this->form->status = ExampleSettings::defaultStatus();
+            $this->form->category_id = UserDefaultCategory::forCurrentUser();
 
             return;
         }
@@ -78,9 +82,7 @@ new class extends Component
     {
         $action = $this->form->example ? 'update' : 'create';
 
-        if (! auth()->user()?->can('example.manage.'.$action)) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::forms.not_allowed'));
-
+        if (! $this->guardAction('example.manage.'.$action)) {
             return;
         }
 

@@ -6,9 +6,12 @@ use Livewire\Attributes\Computed;
 use Livewire\Component;
 use VmEngine\Example\Models\ExampleTag;
 use VmEngine\Synapse\Services\Helper\Breadcrumbs;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
+    use GuardsBackendPermission;
+
     public ?int $editingId = null;
 
     public string $editName = '';
@@ -46,7 +49,7 @@ new class extends Component
 
     public function saveEdit(): void
     {
-        if (! $this->allowed('example.tag.update') || $this->editingId === null) {
+        if (! $this->guardAction('example.tag.update') || $this->editingId === null) {
             return;
         }
 
@@ -62,7 +65,7 @@ new class extends Component
 
     public function addTag(): void
     {
-        if (! $this->allowed('example.tag.create')) {
+        if (! $this->guardAction('example.tag.create')) {
             return;
         }
 
@@ -81,7 +84,7 @@ new class extends Component
         // Closes x-synapse-confirm-dialog on every path.
         $this->dispatch('synapse-confirmed');
 
-        if (! $this->allowed('example.tag.delete')) {
+        if (! $this->guardAction('example.tag.delete')) {
             return;
         }
 
@@ -124,17 +127,6 @@ new class extends Component
     public function render()
     {
         return $this->view()->title(page_title($this->title()));
-    }
-
-    private function allowed(string $acl): bool
-    {
-        if (auth()->user()?->can($acl)) {
-            return true;
-        }
-
-        $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::lists.not_allowed'));
-
-        return false;
     }
 
     private function saved(): void

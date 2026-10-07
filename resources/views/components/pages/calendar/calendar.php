@@ -11,9 +11,12 @@ use VmEngine\Example\Enums\ExampleStatus;
 use VmEngine\Example\Livewire\Concerns\PagePatternPage;
 use VmEngine\Example\Models\Example;
 use VmEngine\Example\Support\ExampleSettings;
+use VmEngine\Example\Support\UserDefaultCategory;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
+    use GuardsBackendPermission;
     use PagePatternPage;
 
     #[Url()]
@@ -67,9 +70,7 @@ new class extends Component
 
     public function saveQuick(): void
     {
-        if (! auth()->user()?->can('example.manage.create')) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::pages.not_allowed'));
-
+        if (! $this->guardAction('example.manage.create')) {
             return;
         }
 
@@ -85,6 +86,7 @@ new class extends Component
             'email' => $data['quickEmail'],
             'status' => $data['quickStatus'],
             'due_at' => $data['quickDate'],
+            'category_id' => UserDefaultCategory::forCurrentUser(),
         ]);
 
         unset($this->events);

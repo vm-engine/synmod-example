@@ -30,7 +30,6 @@ return [
     'saved' => 'Example saved.',
     'created' => 'Example created.',
     'not_found' => 'Example not found.',
-    'not_allowed' => 'You are not allowed to do that.',
     'errors_count' => '{1} 1 error|[2,*] :count errors',
     'show_errors' => 'Show errors',
     'hide_errors' => 'Hide errors',

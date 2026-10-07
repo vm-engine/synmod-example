@@ -95,7 +95,7 @@
                                         @if ($pattern['status'] === 'built')
                                             <a
                                                 class="btn primary"
-                                                href="{{ backend_route($pattern['route']) }}"
+                                                href="{{ $this->patternUrl($pattern) }}"
                                                 wire:navigate
                                             >
                                                 {{ __('example::catalog.open_demo') }}

@@ -10,9 +10,14 @@ use Livewire\WithPagination;
 use VmEngine\Example\Enums\ExampleStatus;
 use VmEngine\Example\Livewire\Concerns\ListPatternPage;
 use VmEngine\Example\Models\Example;
+use VmEngine\Example\Support\ExampleActivity;
+use VmEngine\Example\Support\ExampleNotifier;
+use VmEngine\Example\Support\ExampleSearchIndex;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
+    use GuardsBackendPermission;
     use ListPatternPage;
     use WithPagination;
 
@@ -73,11 +78,18 @@ new class extends Component
     {
         $target = ExampleStatus::tryFrom($status);
 
-        if ($target === null || ! $this->allowed('example.manage.update')) {
+        if ($target === null || ! $this->guardAction('example.manage.update')) {
             return;
         }
 
         $count = $this->bulkQuery()->update(['status' => $target->value, 'updated_by' => auth()->id()]);
+        if ($count > 0) {
+            ExampleActivity::summary('example.bulk_status', ['count' => $count, 'status' => $target->label()]);
+
+            if ($target === ExampleStatus::Published) {
+                ExampleNotifier::bulkPublished($count);
+            }
+        }
         $this->finishBulk(__('example::lists.bulk_status_done', ['count' => $count, 'status' => $target->label()]));
     }
 
@@ -86,11 +98,16 @@ new class extends Component
         // Closes x-synapse-confirm-dialog on every path.
         $this->dispatch('synapse-confirmed');
 
-        if (! $this->allowed('example.manage.delete')) {
+        if (! $this->guardAction('example.manage.delete')) {
             return;
         }
 
+        $ids = $this->bulkQuery()->pluck('id')->all();
         $count = $this->bulkQuery()->delete();
+        if ($count > 0) {
+            ExampleActivity::summary('example.bulk_deleted', ['count' => $count]);
+            ExampleSearchIndex::forgetMany($ids);
+        }
         $this->finishBulk(__('example::lists.bulk_deleted', ['count' => $count]));
     }
 
@@ -124,17 +141,6 @@ new class extends Component
         return $this->selectAllMatching
             ? $this->filteredQuery()
             : Example::query()->whereKey(array_map('intval', $this->selected));
-    }
-
-    private function allowed(string $acl): bool
-    {
-        if (auth()->user()?->can($acl)) {
-            return true;
-        }
-
-        $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::lists.not_allowed'));
-
-        return false;
     }
 
     private function finishBulk(string $message): void

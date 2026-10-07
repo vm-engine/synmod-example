@@ -11,10 +11,12 @@ use VmEngine\Example\Livewire\Concerns\FormPatternPage;
 use VmEngine\Example\Livewire\Concerns\WizardSteps;
 use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
     use FormPatternPage;
+    use GuardsBackendPermission;
     use WizardSteps;
 
     public string $text = '';
@@ -53,9 +55,7 @@ new class extends Component
 
     public function finish(): void
     {
-        if (! auth()->user()?->can('example.manage.create')) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::forms.not_allowed'));
-
+        if (! $this->guardAction('example.manage.create')) {
             return;
         }
 

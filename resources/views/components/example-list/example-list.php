@@ -11,10 +11,12 @@ use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
 use VmEngine\Example\Support\ExampleSettings;
 use VmEngine\Synapse\Services\Helper\Breadcrumbs;
+use VmEngine\Synapse\Traits\RemembersQueryParams;
 use VmEngine\Synapse\Traits\WithSortablePagination;
 
 new class extends Component
 {
+    use RemembersQueryParams;
     use WithPagination;
     use WithSortablePagination;
 
@@ -43,6 +45,14 @@ new class extends Component
     public function hasFilters(): bool
     {
         return filled($this->q) || filled($this->filterOption) || $this->filterCategories !== [];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function rememberedParams(): array
+    {
+        return ['q', 'filterOption', 'filterCategories', 'sortField', 'sortDirection'];
     }
 
     public function title(): string

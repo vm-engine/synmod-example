@@ -64,4 +64,12 @@ it('has no public method that shares a name with a public property', function (s
     'example::pages.node-browser',
     'example::pages.empty-states',
     'example::pages.component-gallery',
+    'example::integrations.auth-helpers',
+    'example::integrations.activity',
+    'example::integrations.abac',
+    'example::integrations.api',
+    'example::integrations.notifications',
+    'example::integrations.import',
+    'example::frontend.index',
+    'example::frontend.search',
 ]);

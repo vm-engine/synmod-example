@@ -137,5 +137,31 @@
             "update": 1,
             "delete": 0
         }
+    },
+    "searchables": {
+        "create": {
+            "name": "__example::search.create",
+            "description": "__example::search.create_desc",
+            "route": "example.editor",
+            "icon": "ph ph-plus",
+            "acl": "example.manage.create",
+            "keywords": "new add example"
+        },
+        "catalog": {
+            "name": "__example::search.catalog",
+            "description": "__example::search.catalog_desc",
+            "route": "example.catalog",
+            "icon": "ph ph-squares-four",
+            "acl": "example.any",
+            "keywords": "patterns demo"
+        },
+        "activity": {
+            "name": "__example::search.activity",
+            "description": "__example::search.activity_desc",
+            "route": "example.integrations.activity",
+            "icon": "ph ph-clock-counter-clockwise",
+            "acl": "example.manage",
+            "keywords": "log audit history"
+        }
     }
 }

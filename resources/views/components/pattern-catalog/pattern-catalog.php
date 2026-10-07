@@ -102,4 +102,12 @@ new class extends Component
     {
         return $this->view()->title(page_title($this->title()));
     }
+
+    /**
+     * @param  array<string, mixed>  $pattern
+     */
+    public function patternUrl(array $pattern): ?string
+    {
+        return PatternCatalog::url($pattern);
+    }
 };

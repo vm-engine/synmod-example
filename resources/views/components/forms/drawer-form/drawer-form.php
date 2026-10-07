@@ -11,10 +11,12 @@ use VmEngine\Example\Livewire\Concerns\FormPatternPage;
 use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
 use VmEngine\Example\Support\ExampleSettings;
+use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
 {
     use FormPatternPage;
+    use GuardsBackendPermission;
     use WithPagination;
 
     public ?int $editingId = null;
@@ -56,9 +58,7 @@ new class extends Component
     {
         $action = $this->editingId ? 'update' : 'create';
 
-        if (! auth()->user()?->can('example.manage.'.$action)) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::forms.not_allowed'));
-
+        if (! $this->guardAction('example.manage.'.$action)) {
             return;
         }
 
