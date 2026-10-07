@@ -5,7 +5,14 @@ All notable changes to `vm-engine/synmod-example` will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.0.0] - Unreleased
+## [3.0.0] - 2026-10-07
+
+### ⚠️ Breaking changes
+- Requires `vm-engine/synapse` ^3.3 and `vm-engine/synapps-auth` ^3.1 (Livewire 4, CSP-safe Alpine build, Phosphor icons).
+- New migrations alter `examples` (slug, status, due date, content, meta, position, creator columns, soft deletes) and add a nullable `users.example_default_category_id`; run `php artisan migrate`, then `php artisan example:setup`.
+- Deleting an example is a soft delete; files are removed only on force delete.
+- New permissions `example.tag`, `example.node`, `example.settings` must be assigned to roles; `<x-synapse-select>`/`<x-synapse-multiselect>` usages replaced by `<x-synapse-adv-select>`.
+- See "Upgrading from 2.x" in the README.
 
 ### Added
 - **Pattern Catalog** (`/example/catalog`, first menu item, `example.any`): registry-driven index of every list/form/page/component/integration pattern the module demonstrates or will (`src/Catalog/PatternCatalog.php`, 57 entries, built vs planned), card grid with search, group chips, built-only toggle, progress bar and `x-synapse-copy-button` source paths. Guard tests keep built entries pointing at real routes and files.
@@ -34,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Public **frontend pages** (`/example`): list with category filter, detail by slug and search with highlighting — published examples only.
 
 ### Changed
-- **Requires `vm-engine/synapse` ^3.2 and `vm-engine/synapps-auth` ^3.0**, Laravel ^11.0|^12.0|^13.0.
+- **Requires `vm-engine/synapse` ^3.3 and `vm-engine/synapps-auth` ^3.1**, Laravel ^11.0|^12.0|^13.0.
 - `example-list` / `category-list` on synapse conventions: `WithSortablePagination` (whitelisted sort fields), `x-synapse-panel`, `-search-box` (filter drawer in the trailing slot), `-sort-icon`, `-per-page-selector`; status badge column; drawer titles computed in the class (no `@php` in views).
 - Deleting an example is now a soft delete; its uploaded file is removed only on force delete.
 - Backend menu and form icons switched to Phosphor.
@@ -46,7 +53,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All date inputs use `<x-synapse-datepicker>` (filter row uses `wire:model.live`); a guard test fails on native `type="date"` inputs.
 - `Example` defaults the NOT NULL legacy columns (`protected`, `number`, `dropdown`) so the new forms can create rows; `ExampleAttachment` uses `WithDeleteToken`.
 
-- Requires `vm-engine/synapse` 3.3 (`ReceivesImportTask`) and `vm-engine/synapps-auth` 3.0.1 (extension fields, OTP modal); bump the composer constraints at release.
 - The catalog links a `frontend:<route>` entry to a public page.
 
 ### Fixed
@@ -63,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 - `CLAUDE.md`: added the `composer.json` local-dev `version` key policy and git commit/push approval policy.
+- README rewritten for 3.0: Pattern Catalog overview, requirements, setup steps, permissions table, routes and an "Upgrading from 2.x" section.
 
 ## [2.0.2] - 2026-02-24
 
