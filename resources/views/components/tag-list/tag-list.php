@@ -78,6 +78,9 @@ new class extends Component
 
     public function delete(string $token): void
     {
+        // Closes x-synapse-confirm-dialog on every path.
+        $this->dispatch('synapse-confirmed');
+
         if (! $this->allowed('example.tag.delete')) {
             return;
         }

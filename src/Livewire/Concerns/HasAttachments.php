@@ -7,7 +7,7 @@ namespace VmEngine\Example\Livewire\Concerns;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use VmEngine\Example\Models\Example;
-use VmEngine\Example\Models\ExampleAttachment;
+use VmEngine\Example\Support\ExampleSettings;
 
 /**
  * Cover image (Example::$file) + multi-file attachments for an example.
@@ -18,19 +18,24 @@ use VmEngine\Example\Models\ExampleAttachment;
  */
 trait HasAttachments
 {
-    public const MAX_ATTACHMENTS = 10;
+    use DeletesAttachments;
 
     public ?TemporaryUploadedFile $cover = null;
 
     /** @var list<TemporaryUploadedFile> */
     public array $attachments = [];
 
+    public function maxAttachments(): int
+    {
+        return ExampleSettings::maxAttachments();
+    }
+
     /**
      * @return array<string, mixed>
      */
     protected function uploadRules(?Example $example): array
     {
-        $remaining = self::MAX_ATTACHMENTS - ($example?->attachments()->count() ?? 0);
+        $remaining = $this->maxAttachments() - ($example?->attachments()->count() ?? 0);
 
         return [
             'cover' => ['nullable', 'image', 'max:2048'],
@@ -66,26 +71,5 @@ trait HasAttachments
         }
 
         $this->reset('cover', 'attachments');
-    }
-
-    public function deleteAttachment(string $token): void
-    {
-        if (! auth()->user()?->can('example.manage.update')) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::forms.not_allowed'));
-
-            return;
-        }
-
-        $id = ExampleAttachment::validateDeleteToken($token);
-        $attachment = $id ? ExampleAttachment::query()->find($id) : null;
-
-        if ($attachment === null) {
-            $this->dispatch('notify', variant: 'danger', title: 'Error', message: __('example::labels.invalid_delete_token'));
-
-            return;
-        }
-
-        $attachment->delete();
-        $this->dispatch('notify', variant: 'success', title: 'Success', message: __('example::forms.attachment_deleted'));
     }
 }

@@ -10,5 +10,6 @@ return [
         'category' => 'Category',
         'tags' => 'Tags',
         'nodes' => 'Nodes',
+        'settings' => 'Settings',
     ],
 ];

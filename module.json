@@ -16,7 +16,8 @@
     "dependencies": {
         "npm": {
             "main": {
-                "jodit": "^4.15"
+                "jodit": "^4.15",
+                "apexcharts": "^7.8"
             },
             "dev": {}
         },
@@ -79,6 +80,14 @@
                     "class": "",
                     "icon": "ph ph-tree-structure",
                     "acl": "example.node"
+                },
+                "settings": {
+                    "id": "settings",
+                    "name": "__example::menu.be.settings",
+                    "route": "example.settings",
+                    "class": "",
+                    "icon": "ph ph-gear-six",
+                    "acl": "example.settings"
                 }
             }
         }
@@ -120,6 +129,13 @@
             "read": 1,
             "update": 1,
             "delete": 1
+        },
+        "settings": {
+            "label": "__example::acl.settings",
+            "create": 0,
+            "read": 1,
+            "update": 1,
+            "delete": 0
         }
     }
 }

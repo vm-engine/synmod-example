@@ -10,6 +10,7 @@ use VmEngine\Example\Enums\ExampleStatus;
 use VmEngine\Example\Livewire\Concerns\FormPatternPage;
 use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
+use VmEngine\Example\Support\ExampleSettings;
 
 new class extends Component
 {
@@ -35,6 +36,7 @@ new class extends Component
     {
         $this->resetValidation();
         $this->reset('editingId', 'text', 'email', 'category_id', 'status');
+        $this->status = ExampleSettings::defaultStatus();
         $this->dispatch('example-drawer-open');
     }
 

@@ -14,6 +14,7 @@ use VmEngine\Example\Livewire\Concerns\HasTagSearch;
 use VmEngine\Example\Livewire\Forms\ExampleEditorForm;
 use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
+use VmEngine\Example\Support\ExampleSettings;
 
 new class extends Component
 {
@@ -28,6 +29,8 @@ new class extends Component
     public function mount(?int $id = null): void
     {
         if ($id === null) {
+            $this->form->status = ExampleSettings::defaultStatus();
+
             return;
         }
 

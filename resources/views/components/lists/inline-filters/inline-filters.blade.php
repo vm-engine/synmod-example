@@ -13,7 +13,9 @@
                             <th><p>Text</p></th>
                             <th><p>{{ __('example::labels.status') }}</p></th>
                             <th><p>{{ __('example::lists.category') }}</p></th>
-                            <th><p>Due</p></th>
+                            @if ($this->showDueColumn)
+                                <th><p>Due</p></th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -27,11 +29,13 @@
                                     >{{ $example->status->label() }}</x-synapse-badge>
                                 </td>
                                 <td><p>{{ $example->category?->name ?? '—' }}</p></td>
-                                <td><p>{{ $example->due_at?->toDateString() ?? '—' }}</p></td>
+                                @if ($this->showDueColumn)
+                                    <td><p>{{ $example->due_at?->toDateString() ?? '—' }}</p></td>
+                                @endif
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4"><p class="py-6 text-center text-sm text-gray-500">{{ __('example::lists.no_results') }}</p></td>
+                                <td colspan="{{ $this->showDueColumn ? 4 : 3 }}"><p class="py-6 text-center text-sm text-gray-500">{{ __('example::lists.no_results') }}</p></td>
                             </tr>
                         @endforelse
                     </tbody>

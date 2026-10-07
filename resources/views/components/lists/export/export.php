@@ -7,13 +7,11 @@ use Livewire\Component;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use VmEngine\Example\Enums\ExampleStatus;
 use VmEngine\Example\Exports\ExampleExportQuery;
-use VmEngine\Example\Exports\ExampleStatusLabel;
 use VmEngine\Example\Livewire\Concerns\FiltersExamples;
 use VmEngine\Example\Livewire\Concerns\ListPatternPage;
 use VmEngine\Example\Models\ExampleCategory;
 use VmEngine\Synapse\Models\ExcelExport;
 use VmEngine\Synapse\Services\Excel\ExcelExporter;
-use VmEngine\Synapse\Services\Excel\Transformers\DateFormatTransformer;
 use VmEngine\Synapse\Traits\WithExcelExport;
 
 new class extends Component
@@ -33,7 +31,7 @@ new class extends Component
     public function exportSync(): BinaryFileResponse
     {
         return ExcelExporter::make(($this->exportQuery())())
-            ->columns($this->columns())
+            ->columns(ExampleExportQuery::columns())
             ->download('examples-'.now()->format('Ymd-His').'.xlsx');
     }
 
@@ -50,7 +48,7 @@ new class extends Component
 
         ExcelExporter::make(ExampleExportQuery::class)
             ->withFilters($this->filterValues())
-            ->columns($this->columns())
+            ->columns(ExampleExportQuery::columns())
             ->reference($reference)
             ->forUser((int) auth()->id())
             ->dispatch(storage_path('app/exports/examples-'.auth()->id().'-'.now()->format('YmdHis').'.xlsx'));
@@ -109,23 +107,5 @@ new class extends Component
     private function exportReference(): string
     {
         return 'example-export-'.auth()->id();
-    }
-
-    /**
-     * Serializable column map (works for both sync and queued exports).
-     *
-     * @return array<string, string|array<string, mixed>>
-     */
-    private function columns(): array
-    {
-        return [
-            'ID' => 'id',
-            'Text' => 'text',
-            'Category' => 'category.name',
-            'Status' => ['field' => 'status', 'transformer' => ExampleStatusLabel::class],
-            'Due' => ['field' => 'due_at', 'transformer' => DateFormatTransformer::class, 'config' => ['format' => 'Y-m-d']],
-            'Email' => 'email',
-            'Created' => ['field' => 'created_at', 'transformer' => DateFormatTransformer::class, 'config' => ['format' => 'Y-m-d H:i']],
-        ];
     }
 };

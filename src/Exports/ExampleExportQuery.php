@@ -7,6 +7,7 @@ namespace VmEngine\Example\Exports;
 use Illuminate\Database\Eloquent\Builder;
 use VmEngine\Example\Models\Example;
 use VmEngine\Synapse\Services\Excel\Contracts\ExportQuery;
+use VmEngine\Synapse\Services\Excel\Transformers\DateFormatTransformer;
 
 /**
  * The single source of example filtering: used on screen by the inline-filter
@@ -36,5 +37,23 @@ final class ExampleExportQuery implements ExportQuery
             ->when($this->dueFrom !== null, fn (Builder $query) => $query->whereDate('due_at', '>=', $this->dueFrom))
             ->when($this->dueTo !== null, fn (Builder $query) => $query->whereDate('due_at', '<=', $this->dueTo))
             ->orderBy('id');
+    }
+
+    /**
+     * Serializable column map shared by the list export and the report export.
+     *
+     * @return array<string, string|array<string, mixed>>
+     */
+    public static function columns(): array
+    {
+        return [
+            'ID' => 'id',
+            'Text' => 'text',
+            'Category' => 'category.name',
+            'Status' => ['field' => 'status', 'transformer' => ExampleStatusLabel::class],
+            'Due' => ['field' => 'due_at', 'transformer' => DateFormatTransformer::class, 'config' => ['format' => 'Y-m-d']],
+            'Email' => 'email',
+            'Created' => ['field' => 'created_at', 'transformer' => DateFormatTransformer::class, 'config' => ['format' => 'Y-m-d H:i']],
+        ];
     }
 }

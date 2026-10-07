@@ -12,7 +12,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $role = Role::factory()->admin()->create();
-    foreach (['manage', 'category', 'tag', 'node'] as $feature) {
+    foreach (['manage', 'category', 'tag', 'node', 'settings'] as $feature) {
         RolePermission::factory()->forModule('example', $feature)->fullCrud()->create(['role_id' => $role->id]);
     }
     $this->user = User::factory()->create();
@@ -54,4 +54,14 @@ it('has no public method that shares a name with a public property', function (s
     'example::forms.tabbed',
     'example::forms.modal-wizard',
     'example::forms.page-wizard',
+    'example::pages.dashboard',
+    'example::pages.report',
+    'example::pages.progress',
+    'example::pages.detail',
+    'example::pages.settings',
+    'example::pages.kanban',
+    'example::pages.calendar',
+    'example::pages.node-browser',
+    'example::pages.empty-states',
+    'example::pages.component-gallery',
 ]);

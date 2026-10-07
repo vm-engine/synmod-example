@@ -57,7 +57,7 @@ return [
     'tags_placeholder' => 'Search or type a new tag and press Enter',
     'cover' => 'Cover image',
     'attachments' => 'Attachments',
-    'attachments_hint' => 'Up to 5 files at a time (10 per example), 5 MB each: jpg, png, webp, pdf.',
+    'attachments_hint' => 'Up to 5 files at a time (:max per example), 5 MB each: jpg, png, webp, pdf.',
     'attachments_limit' => 'An example can have at most :max attachments.',
     'attachment_deleted' => 'Attachment deleted.',
     'current_cover' => 'Current cover',

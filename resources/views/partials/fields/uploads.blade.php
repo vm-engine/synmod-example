@@ -28,7 +28,7 @@
             :max-size-kb="5120"
             :allowed-types="['jpg', 'jpeg', 'png', 'webp', 'pdf']"
             :current-count="$attachmentCount"
-            :hint="__('example::forms.attachments_hint')"
+            :hint="__('example::forms.attachments_hint', ['max' => $maxAttachments])"
             :error="$errors->first('attachments') ?: $errors->first('attachments.*')"
         />
 

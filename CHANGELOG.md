@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Form patterns** (sub-project 3, 33/57 built): full **Example editor** (`/example/editor/{id?}`) with a sticky action bar + linked error summary, slug auto-fill, real-time validation, rich text, key/value meta repeater with a raw-JSON toggle, remote + creatable tags select, cover + multi-file attachments, conditional fields and color picker; layout pages for a modal hosting a child form, drawer create/edit, tabbed form with per-tab error counts, modal wizard and page wizard (`x-synapse-steps`, per-step validation).
 - `<x-example::rich-text>`: local Jodit wrapper (lazy `import('jodit')`, `wire:ignore`), HTML purified server-side by `RichTextSanitizer`; `TagResolver` turns typed tag names into tags.
 - `php artisan example:setup` adds the module JS import to the host `resources/js/app.js` (idempotent).
+- **Page patterns** (sub-project 4, 44/57 built): dashboard (stat tiles, ApexCharts donut + line, lazy panels), status report (status × category matrix, bar chart updated in place, print view on a bare layout, queued Excel export), live export progress page (`wire:poll`, owner-only, download), detail page with Overview / Attachments / Related tabs (lazy children, lightbox, confirm delete), kanban board (drag between status columns, publish-note gate, WIP limit badge), calendar (month view of due dates, day quick-create), split-pane node browser, empty states and a component gallery.
+- **Settings** page (`/example/settings`, new `example.settings` permission and menu item): rows per page, due column, default status, max attachments and kanban WIP limit, stored in DbConfig by `ExampleSettings` and read by the list, inline filters, editor, drawer form and kanban.
+- `<x-example::chart>`: ApexCharts wrapper (lazy `import('apexcharts')`, `wire:ignore`, updated via `example-chart-{id}` events, dark-mode aware, empty state); `ExampleStats` aggregates; shared `empty-state` partial (also used by the example list, with "Clear filters").
 
 ### Changed
 - **Requires `vm-engine/synapse` ^3.2 and `vm-engine/synapps-auth` ^3.0**, Laravel ^11.0|^12.0|^13.0.
@@ -25,7 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backend menu and form icons switched to Phosphor.
 - `declare(strict_types=1)` on every PHP file.
 - PHPStan level 7 with no ignore list (now covering `database/` too): typed `rules()`, form array properties, `?TemporaryUploadedFile $file`, `newFactory()` returns, `HasFactory` generics, scope builders and relation generics. `/build/` added to `.gitignore`.
-- Requires `mews/purifier` ^3.4; npm `jodit` ^4.15.
+- Requires `mews/purifier` ^3.4; npm `jodit` ^4.15 and `apexcharts` ^7.8.
+- Export columns live on `ExampleExportQuery::columns()` (shared by the list and report exports); attachment delete moved to a `DeletesAttachments` trait; the attachment limit comes from settings.
+- Example titles in the list link to the detail page.
 - All date inputs use `<x-synapse-datepicker>` (filter row uses `wire:model.live`); a guard test fails on native `type="date"` inputs.
 - `Example` defaults the NOT NULL legacy columns (`protected`, `number`, `dropdown`) so the new forms can create rows; `ExampleAttachment` uses `WithDeleteToken`.
 
@@ -36,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tag slugs are now unique (`-2`, `-3`…) when two names slugify the same.
 - Real-time fields use `wire:model.live.blur` (Livewire 4.1's `.blur` alone no longer sends a request).
 - `category-list` had no page `<title>`; factories no longer pass `array|string` faker values to `ucfirst()`/`Str::slug()`.
+- Confirm dialogs stayed open after Confirm: every confirmed action (example, category, tag, node, trash, bulk and attachment deletes) now dispatches `synapse-confirmed`.
 
 ### Removed
 - Unused `example-page` / `button-sample` components (Bootstrap markup, CSP-blocked `alert()`), and the completed `docs/STRICT_TYPES_PLAN.md`.

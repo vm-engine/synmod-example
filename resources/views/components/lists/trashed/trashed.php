@@ -30,6 +30,9 @@ new class extends Component
 
     public function delete(string $token): void
     {
+        // Closes x-synapse-confirm-dialog on every path.
+        $this->dispatch('synapse-confirmed');
+
         $example = $this->resolve($token, trashed: false);
         $example?->delete();
         $this->done($example !== null, __('example::lists.moved_to_trash'));
@@ -44,6 +47,9 @@ new class extends Component
 
     public function forceDelete(string $token): void
     {
+        // Closes x-synapse-confirm-dialog on every path.
+        $this->dispatch('synapse-confirmed');
+
         $example = $this->resolve($token, trashed: true);
         $example?->forceDelete();
         $this->done($example !== null, __('example::lists.force_deleted'));

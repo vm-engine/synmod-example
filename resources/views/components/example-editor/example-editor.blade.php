@@ -69,7 +69,7 @@
 
                 <x-synapse-panel :title="__('example::forms.attachments')">
                     <div class="syn-panel-body px-5 py-4 sm:px-6">
-                        @include('example::partials.fields.uploads', ['example' => $this->form->example, 'attachmentCount' => $this->attachmentCount])
+                        @include('example::partials.fields.uploads', ['example' => $this->form->example, 'attachmentCount' => $this->attachmentCount, 'maxAttachments' => $this->maxAttachments()])
                     </div>
                 </x-synapse-panel>
             </div>

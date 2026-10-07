@@ -9,6 +9,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
+use VmEngine\Example\Support\ExampleSettings;
 use VmEngine\Synapse\Services\Helper\Breadcrumbs;
 use VmEngine\Synapse\Traits\WithSortablePagination;
 
@@ -29,6 +30,19 @@ new class extends Component
     public function mount(): void
     {
         synav()->setActiveMenu('example.index');
+        $this->perPage = ExampleSettings::perPage();
+    }
+
+    public function clearFilters(): void
+    {
+        $this->reset('q', 'filterOption', 'filterCategories');
+        $this->resetPage();
+    }
+
+    #[Computed()]
+    public function hasFilters(): bool
+    {
+        return filled($this->q) || filled($this->filterOption) || $this->filterCategories !== [];
     }
 
     public function title(): string
@@ -81,6 +95,9 @@ new class extends Component
      */
     public function delete(string $token): void
     {
+        // Closes x-synapse-confirm-dialog on every path.
+        $this->dispatch('synapse-confirmed');
+
         try {
             $id = Example::validateDeleteToken($token);
 

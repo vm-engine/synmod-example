@@ -34,6 +34,29 @@ Route::group([], function () {
             ->middleware('can-access:example.manage.create');
     });
 
+    Route::livewire('/dashboard', 'example::pages.dashboard')->name('dashboard')
+        ->middleware('can-access:example.manage.read');
+    Route::livewire('/report', 'example::pages.report')->name('report')
+        ->middleware('can-access:example.manage.read');
+    Route::livewire('/report/print', 'example::pages.report-print')->name('report.print')
+        ->middleware('can-access:example.manage.read');
+    Route::livewire('/progress/{task?}', 'example::pages.progress')->name('progress')
+        ->middleware('can-access:example.manage.read');
+    Route::livewire('/examples/{id?}', 'example::pages.detail')->name('show')
+        ->middleware('can-access:example.manage.read');
+    Route::livewire('/settings', 'example::pages.settings')->name('settings')
+        ->middleware('can-access:example.settings');
+    Route::livewire('/kanban', 'example::pages.kanban')->name('kanban')
+        ->middleware('can-access:example.manage.update');
+    Route::livewire('/calendar', 'example::pages.calendar')->name('calendar')
+        ->middleware('can-access:example.manage.read');
+    Route::livewire('/nodes/browse', 'example::pages.node-browser')->name('nodes.browse')
+        ->middleware('can-access:example.node');
+    Route::livewire('/empty-states', 'example::pages.empty-states')->name('empty-states')
+        ->middleware('can-access:example.manage');
+    Route::livewire('/components', 'example::pages.component-gallery')->name('components')
+        ->middleware('can-access:example.any');
+
     Route::prefix('lists')->name('lists.')->group(function () {
         Route::livewire('/card-grid', 'example::lists.card-grid')->name('card-grid')
             ->middleware('can-access:example.manage');

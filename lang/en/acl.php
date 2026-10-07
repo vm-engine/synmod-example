@@ -6,4 +6,5 @@ return [
     'category' => 'Example Category',
     'tag' => 'Example Tags',
     'node' => 'Example Nodes',
+    'settings' => 'Example Settings',
 ];

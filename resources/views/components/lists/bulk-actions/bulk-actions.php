@@ -83,12 +83,14 @@ new class extends Component
 
     public function bulkDelete(): void
     {
+        // Closes x-synapse-confirm-dialog on every path.
+        $this->dispatch('synapse-confirmed');
+
         if (! $this->allowed('example.manage.delete')) {
             return;
         }
 
         $count = $this->bulkQuery()->delete();
-        $this->dispatch('synapse-confirmed');
         $this->finishBulk(__('example::lists.bulk_deleted', ['count' => $count]));
     }
 

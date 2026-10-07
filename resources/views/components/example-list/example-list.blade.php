@@ -89,7 +89,7 @@
                             @foreach ($this->exampleList as $list)
                                 <tr wire:key="example-{{ $list->id }}">
                                     <td><p>{{ $this->exampleList->firstItem() + $loop->index }}</p></td>
-                                    <td><p>{{ $list->text }}</p></td>
+                                    <td><p><a class="hover:underline" href="{{ backend_route('example.show', ['id' => $list->id]) }}" wire:navigate>{{ $list->text }}</a></p></td>
                                     <td>
                                         @if ($list->category)
                                             <button
@@ -164,6 +164,12 @@
                     </table>
                 </div>
             </div>
+
+            @if ($this->exampleList->isEmpty())
+                @include('example::partials.empty-state', $this->hasFilters
+                    ? ['icon' => 'ph ph-magnifying-glass', 'title' => __('example::pages.no_results'), 'text' => __('example::pages.no_results_text'), 'action' => ['label' => __('example::pages.clear_filters'), 'click' => 'clearFilters']]
+                    : ['icon' => 'ph ph-cube', 'title' => __('example::pages.no_examples'), 'text' => __('example::pages.no_examples_text'), 'action' => ['label' => __('example::pages.create_example'), 'href' => backend_route('example.editor')]])
+            @endif
 
             <x-synapse-per-page-selector :paginator="$this->exampleList" />
         </x-synapse-panel>

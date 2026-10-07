@@ -9,6 +9,7 @@ use VmEngine\Example\Enums\ExampleStatus;
 use VmEngine\Example\Livewire\Concerns\FiltersExamples;
 use VmEngine\Example\Livewire\Concerns\ListPatternPage;
 use VmEngine\Example\Models\ExampleCategory;
+use VmEngine\Example\Support\ExampleSettings;
 
 new class extends Component
 {
@@ -17,6 +18,17 @@ new class extends Component
     use WithPagination;
 
     public int $perPage = 15;
+
+    public function mount(): void
+    {
+        $this->perPage = ExampleSettings::perPage();
+    }
+
+    #[Computed()]
+    public function showDueColumn(): bool
+    {
+        return ExampleSettings::showDueColumn();
+    }
 
     public function title(): string
     {

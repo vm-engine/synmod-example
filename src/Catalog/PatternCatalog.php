@@ -59,21 +59,21 @@ final class PatternCatalog
 
             // Pages
             self::built('page-catalog', 'pages', 'Pattern catalog', 'This page: registry-driven card grid with search, group filter and copy-path buttons.', 'example.catalog', ['resources/views/components/pattern-catalog', 'src/Catalog/PatternCatalog.php']),
-            self::planned('page-detail-tabs', 'pages', 'Detail page with tabs', 'Show page whose tabs host nested Livewire components.', 4),
-            self::planned('page-dashboard', 'pages', 'Dashboard', 'Stat tiles and lazy-loaded panels.', 4),
-            self::planned('page-settings', 'pages', 'Tabbed settings page', 'Module settings stored with DbConfig.', 4),
-            self::planned('page-report', 'pages', 'Report with filters + export', 'Inline filters, totals and a queued export.', 4),
-            self::planned('page-print', 'pages', 'Print view', 'Print-styled page (browser print to PDF).', 4),
-            self::planned('page-kanban', 'pages', 'Kanban board', 'Examples by status with drag between columns.', 4),
-            self::planned('page-calendar', 'pages', 'Calendar', 'Month view of examples by due date.', 4),
-            self::planned('page-split-pane', 'pages', 'Split pane', 'Tree on the left, editor on the right.', 4),
-            self::planned('page-empty-states', 'pages', 'Empty states', 'First-run, no-results and error states.', 4),
-            self::planned('page-progress', 'pages', 'Live progress page', 'Polling progress for a running import.', 4),
+            self::built('page-detail-tabs', 'pages', 'Detail page with tabs', 'Overview / Attachments / Related; the tab lives in the URL and the last two are lazy child components (lightbox, confirm delete).', 'example.show', ['resources/views/components/pages/detail', 'resources/views/components/pages/detail-attachments', 'resources/views/components/pages/detail-related'], 4),
+            self::built('page-dashboard', 'pages', 'Dashboard', 'Stat tiles, ApexCharts donut + line, lazy panels with skeletons.', 'example.dashboard', ['resources/views/components/pages/dashboard', 'resources/views/components/pages/dashboard-panel', 'src/Support/ExampleStats.php', 'src/View/Components/Chart.php'], 4),
+            self::built('page-settings', 'pages', 'Tabbed settings page', 'Lists / Editor / Board settings in DbConfig, each tab saved on its own and read by the other pages.', 'example.settings', ['resources/views/components/pages/settings', 'src/Support/ExampleSettings.php'], 4),
+            self::built('page-report', 'pages', 'Report with filters + export', 'Status × category matrix with totals, bar chart updated in place, print view and queued export.', 'example.report', ['resources/views/components/pages/report', 'resources/views/partials/status-matrix.blade.php'], 4),
+            self::built('page-print', 'pages', 'Print view', 'Bare print layout with the report filters (browser print to PDF).', 'example.report.print', ['resources/views/components/pages/report-print', 'resources/views/layouts/print.blade.php'], 4),
+            self::built('page-kanban', 'pages', 'Kanban board', 'Status columns with drag between them, publish-note gate and WIP limit badge.', 'example.kanban', ['resources/views/components/pages/kanban'], 4),
+            self::built('page-calendar', 'pages', 'Calendar', 'Month view of due dates; click a day to quick-create.', 'example.calendar', ['resources/views/components/pages/calendar'], 4),
+            self::built('page-split-pane', 'pages', 'Split pane', 'Node tree on the left, editor with path and children on the right.', 'example.nodes.browse', ['resources/views/components/pages/node-browser', 'resources/views/partials/node-browse-branch.blade.php'], 4),
+            self::built('page-empty-states', 'pages', 'Empty states', 'First-run, no-results and error states from one partial (also used by the list).', 'example.empty-states', ['resources/views/partials/empty-state.blade.php', 'resources/views/components/pages/empty-states'], 4),
+            self::built('page-progress', 'pages', 'Live progress page', 'wire:poll progress for a running export; stops when done and offers the download.', 'example.progress', ['resources/views/components/pages/progress'], 4),
 
             // Components
             self::built('comp-form-fields', 'components', 'Form field components', 'adv-select (single/multi), currency, datepicker, password, radio buttons, checkboxes.', 'example.form', ['resources/views/components/example-form/example-form.blade.php']),
             self::built('comp-copy-button', 'components', 'Copy button', 'x-synapse-copy-button next to each source path on this page.', 'example.catalog', ['resources/views/components/pattern-catalog/pattern-catalog.blade.php']),
-            self::planned('comp-gallery', 'components', 'Component gallery', 'Alerts, badges, panels, stat tiles, lightbox, toastr, confirm dialog in one place.', 4),
+            self::built('comp-gallery', 'components', 'Component gallery', 'Alerts, badges, panels, stat tiles, lightbox, toastr, confirm dialog and drawer in one place.', 'example.components', ['resources/views/components/pages/component-gallery'], 4),
 
             // Integrations
             self::planned('int-auth-helpers', 'integrations', 'Auth directives + helpers', '@canAccess, @hasRole, @isDev and the auth helper functions.', 5),
