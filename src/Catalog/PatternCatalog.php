@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace VmEngine\Example\Catalog;
 
+use VmEngine\Accounting\Accounting;
+
 /**
  * Static index of every UI / integration pattern the example module demonstrates
  * (or will). `built` entries must point at a real backend route name (without
@@ -112,9 +114,27 @@ final class PatternCatalog
             self::built('int-notify', 'integrations', 'Notifications', 'Publishing notifies admins (bell + toast), imports notify the importer; lang keys rendered per viewer.', 'example.integrations.notifications', ['resources/views/components/integrations/notifications', 'src/Notifications', 'src/Support/ExampleNotifier.php'], 5),
             self::built('int-search', 'integrations', 'Global search', 'Examples and key pages in the Ctrl/Cmd+K palette, kept in sync by the observer.', 'example.catalog', ['src/Support/ExampleSearchIndex.php', 'src/Console/SearchReindexCommand.php', 'module.json'], 5),
             self::built('int-import', 'integrations', 'Excel import', 'Queued import with per-row validation, a skipped-rows report, live progress and a template.', 'example.integrations.import', ['resources/views/components/integrations/import', 'src/Imports/ExampleImportProcessor.php'], 5),
+            ...self::accountingPatterns(),
             self::built('int-user-field', 'integrations', 'User field extension', 'A default example category on the backend user form (SynAuthExtension), preselected in the editor and calendar.', 'example.editor', ['database/migrations/2026_10_07_000001_add_example_default_category_to_users_table.php', 'src/ExampleServiceProvider.php', 'resources/views/partials/user-default-category.blade.php', 'src/Support/UserDefaultCategory.php'], 5),
             self::built('int-frontend', 'integrations', 'Frontend pages', 'Public list, detail and search of published examples on the theme layout.', 'frontend:example.index', ['routes/web.php', 'resources/views/components/frontend', 'src/Livewire/Concerns/FrontendPage.php'], 5),
             self::built('int-remember', 'integrations', 'Remembered filters', 'RemembersQueryParams restores the example list and inline filters on return; the URL always wins.', 'example.index', ['resources/views/components/example-list', 'resources/views/components/lists/inline-filters'], 5),
+        ];
+    }
+
+    /**
+     * Patterns for the optional accounting module: none unless vm-engine/synmod-accounting is installed
+     * (the route is registered under the same condition in routes/web.backend.php).
+     *
+     * @return list<Pattern>
+     */
+    private static function accountingPatterns(): array
+    {
+        if (! class_exists(Accounting::class)) {
+            return [];
+        }
+
+        return [
+            self::built('int-accounting', 'integrations', 'Accounting posting', 'Posts, replaces and cancels a journal for an example through the accounting module\'s fluent API; held when accounts are not mapped yet. Listed only where the accounting module is installed.', 'example.integrations.accounting', ['resources/views/components/integrations/accounting', 'module.json'], 5),
         ];
     }
 

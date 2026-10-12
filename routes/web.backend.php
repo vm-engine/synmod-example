@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use VmEngine\Accounting\Accounting;
 
 Route::group([], function () {
     Route::livewire('/', 'example::example-list')->name('index')
@@ -69,6 +70,11 @@ Route::group([], function () {
             ->middleware('can-access:example.manage.read');
         Route::livewire('/import/{task?}', 'example::integrations.import')->name('import')
             ->middleware('can-access:example.manage.create');
+        // Optional module: the pattern exists only where vm-engine/synmod-accounting is installed.
+        if (class_exists(Accounting::class)) {
+            Route::livewire('/accounting', 'example::integrations.accounting')->name('accounting')
+                ->middleware('can-access:example.manage.update');
+        }
     });
 
     Route::prefix('lists')->name('lists.')->group(function () {

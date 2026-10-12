@@ -5,6 +5,11 @@ All notable changes to `vm-engine/synmod-example` will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-10-12
+
+### Added
+- Accounting posting pattern (Catalog → Integrations): declares a transaction class and two account settings under `accounting` in `module.json`, and posts, replaces and cancels a journal for an example through `vm-engine/synmod-accounting`'s fluent API. Accounting is optional: the page, its route and its catalog entry exist only where the module is installed.
+
 ## [3.0.0] - 2026-10-07
 
 ### ⚠️ Breaking changes
