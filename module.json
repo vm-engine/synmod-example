@@ -26,6 +26,27 @@
             "dev": {}
         }
     },
+    "accounting": {
+        "classes": {
+            "example.sale": {
+                "name": "__example::integrations.accounting_class",
+                "types": {
+                    "cash": "__example::integrations.accounting_type_cash",
+                    "transfer": "__example::integrations.accounting_type_transfer"
+                }
+            }
+        },
+        "accounts": {
+            "example.cash": {
+                "name": "__example::integrations.accounting_cash",
+                "normal_balance": "debit"
+            },
+            "example.revenue": {
+                "name": "__example::integrations.accounting_revenue",
+                "normal_balance": "credit"
+            }
+        }
+    },
     "nav": {
         "frontend": {
             "index": {
