@@ -10,7 +10,7 @@ Open **Example → Pattern Catalog** (`/apps/example/catalog`) in the backend. E
 - **Forms** — full editor with sticky action bar and error summary, modal/drawer/tabbed forms, modal and page wizards, repeater, uploads, rich text, remote/creatable select, conditional fields, real-time validation, slug, JSON, color picker.
 - **Pages** — dashboard (ApexCharts), tabbed settings (DbConfig), report + print view, kanban, calendar, split pane, empty states, live progress, detail page with tabs.
 - **Components** — a gallery of the synapse UI components.
-- **Integrations** — auth directives + helpers, activity log, OTP-protected action, conditional (ABAC) permission, guarded actions, user field extension, remembered filters, API v1 + HMAC signing (Postman collection in `docs/postman/`), notifications, global search, queued Excel import, public frontend pages.
+- **Integrations** — auth directives + helpers, activity log, OTP-protected action, conditional (ABAC) permission, guarded actions, user field extension, remembered filters, API v1 + HMAC signing (Postman collection in `docs/postman/`), notifications, global search, queued Excel import, public frontend pages. Where `vm-engine/synmod-accounting` is installed, one more appears: Accounting posting (post, replace and cancel a journal for a record).
 
 ## Requirements
 
