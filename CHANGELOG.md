@@ -5,6 +5,15 @@ All notable changes to `vm-engine/synmod-example` will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2026-10-13
+
+### Changed
+- Rich-text fields now use Synapse's optional editor, `<x-synapse-rte>`, and `VmEngine\Synapse\Rte\RichText::clean()`. The host must enable it (`php artisan synapps:reconfig` → "Enable the rich-text editor?"); while it is off the fields show a notice above a plain textarea.
+- Requires `vm-engine/synapse` ^3.4.
+
+### Removed
+- `<x-example::rich-text>`, its `exampleRichText` Alpine code, `Support\RichTextSanitizer`, and the `jodit` npm dependency: all replaced by the Synapse editor.
+
 ## [3.1.1] - 2026-10-13
 
 ### Added

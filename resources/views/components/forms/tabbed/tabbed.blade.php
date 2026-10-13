@@ -70,7 +70,7 @@
                 </div>
 
                 <div @class(['space-y-4', 'hidden' => $activeTab !== 'content'])>
-                    <x-example::rich-text
+                    <x-synapse-rte
                         field="form.content"
                         :value="$this->form->content"
                     />

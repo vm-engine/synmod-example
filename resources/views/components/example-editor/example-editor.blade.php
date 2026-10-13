@@ -53,7 +53,7 @@
                         class="syn-panel-body px-5 py-4 sm:px-6"
                         id="field-form-content"
                     >
-                        <x-example::rich-text
+                        <x-synapse-rte
                             field="form.content"
                             :value="$this->form->content"
                         />

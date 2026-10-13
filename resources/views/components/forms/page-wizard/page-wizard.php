@@ -11,8 +11,8 @@ use VmEngine\Example\Livewire\Concerns\HasTagSearch;
 use VmEngine\Example\Livewire\Concerns\WizardSteps;
 use VmEngine\Example\Models\Example;
 use VmEngine\Example\Models\ExampleCategory;
-use VmEngine\Example\Support\RichTextSanitizer;
 use VmEngine\Example\Support\TagResolver;
+use VmEngine\Synapse\Rte\RichText;
 use VmEngine\SynAuth\Traits\GuardsBackendPermission;
 
 new class extends Component
@@ -75,7 +75,7 @@ new class extends Component
                 'text' => $this->text,
                 'email' => $this->email,
                 'category_id' => $this->category_id,
-                'content' => RichTextSanitizer::clean($this->content),
+                'content' => RichText::clean($this->content),
                 'color' => $this->color ?: null,
             ]);
             $example->tags()->sync(TagResolver::resolve($this->tags));

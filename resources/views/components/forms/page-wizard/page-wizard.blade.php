@@ -47,7 +47,7 @@
             </div>
 
             <div @class(['space-y-4', 'hidden' => $step !== 2])>
-                <x-example::rich-text
+                <x-synapse-rte
                     field="content"
                     :value="$content"
                 />
