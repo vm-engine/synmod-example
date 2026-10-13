@@ -15,8 +15,9 @@ Open **Example → Pattern Catalog** (`/apps/example/catalog`) in the backend. E
 ## Requirements
 
 - PHP 8.2+, Laravel 11–13, Livewire 4
-- `vm-engine/synapse` ^3.3 and `vm-engine/synapps-auth` ^3.1
-- `mews/purifier` ^3.4; npm `jodit` and `apexcharts` (added to the host `package.json` by `synapps:discover`)
+- `vm-engine/synapse` ^3.4 and `vm-engine/synapps-auth` ^3.1
+- `mews/purifier` ^3.4; npm `apexcharts` (added to the host `package.json` by `synapps:discover`)
+- The rich-text fields use Synapse's optional editor (`<x-synapse-rte>`): enable it with `php artisan synapps:reconfig`. While it is off they show a notice above a plain textarea
 
 ## Installation
 
@@ -83,7 +84,7 @@ packages/synmod-example/
 │   ├── Livewire/ (Concerns, Forms)         # shared traits and form objects
 │   ├── Models/ Observers/ Notifications/ Listeners/
 │   ├── Support/                            # settings, stats, activity, search index, notifier…
-│   └── View/Components/                    # <x-example::chart>, <x-example::rich-text>
+│   └── View/Components/                    # <x-example::chart>
 ├── resources/views/components/             # MFC Livewire components, one folder per page
 │   ├── lists/ forms/ pages/ integrations/ frontend/
 │   └── example-list/ example-editor/ …

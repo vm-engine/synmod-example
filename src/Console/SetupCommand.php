@@ -9,7 +9,7 @@ use VmEngine\Example\Support\ExampleAuthorRole;
 use VmEngine\Example\Support\ExampleSearchIndex;
 
 /**
- * Wires the module's admin JS (rich-text editor) into the host's
+ * Wires the module's admin JS (charts) into the host's
  * resources/js/app.js and ensures the Example author demo role. Idempotent.
  */
 class SetupCommand extends Command

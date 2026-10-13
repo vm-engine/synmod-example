@@ -17,7 +17,7 @@
         @endif
 
         @if ($this->example->content)
-            {{-- Purified on save (RichTextSanitizer). --}}
+            {{-- Purified on save (VmEngine\Synapse\Rte\RichText). --}}
             <div class="prose dark:prose-invert mt-6 max-w-none">{!! $this->example->content !!}</div>
         @endif
 

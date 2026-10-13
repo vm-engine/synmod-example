@@ -11,8 +11,8 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Form;
 use VmEngine\Example\Enums\ExampleStatus;
 use VmEngine\Example\Models\Example;
-use VmEngine\Example\Support\RichTextSanitizer;
 use VmEngine\Example\Support\TagResolver;
+use VmEngine\Synapse\Rte\RichText;
 
 /**
  * Validation + persistence for the full editor and the tabbed form.
@@ -162,7 +162,7 @@ class ExampleEditorForm extends Form
                 'category_id' => $this->category_id,
                 'due_at' => $this->schedule ? $this->due_at : null,
                 'color' => $this->color ?: null,
-                'content' => RichTextSanitizer::clean($this->content),
+                'content' => RichText::clean($this->content),
                 'meta' => $meta === [] ? null : $meta,
             ])->save();
 
